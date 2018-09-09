@@ -1,3 +1,6 @@
 [submodule "TarganRacing"]
 	path = TarganRacing
 	url = https://github.com/olexandryermilov/TarganRacing
+[submodule "numeric-methods"]
+	path = numeric-methods
+	url = https://github.com/olexandryermilov/numeric-methods
