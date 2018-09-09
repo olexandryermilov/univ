@@ -1,11 +1,11 @@
 package com.yermilov.univ.sysprog;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
-import java.util.function.IntFunction;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static java.lang.Character.isLetter;
@@ -67,5 +67,16 @@ class Worker {
             }
         });
         return words;
+    }
+
+    String readFromFile(String path) throws FileNotFoundException {
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
+        return bufferedReader.lines().collect(Collectors.joining("\n"));
+    }
+
+    public String[] doJob(String path) throws FileNotFoundException {
+        String text = readFromFile(path);
+        String[] splittedText = splitter(text);
+        return sortByVowels(splittedText);
     }
 }
