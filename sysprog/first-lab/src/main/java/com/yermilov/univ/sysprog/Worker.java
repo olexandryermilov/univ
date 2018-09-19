@@ -1,19 +1,19 @@
 package com.yermilov.univ.sysprog;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
-import static java.lang.Character.isLetter;
-
 class Worker {
-    private final String VOWELS = "aoeiuAOEIU";
-    private final char[] VOWELS_LOWERCASE = {'a', 'o', 'e', 'i', 'u'};
-    private final char[] VOWELS_UPPERCASE = {'A', 'O', 'E', 'I', 'U'};
+    private final String VOWELS = "aoeiuAOEIUаоуяеёиюії";
+
+    boolean isLetter(char ch) {
+        char lcch = Character.toLowerCase(ch);
+        return Character.isLetter(ch) || (lcch <= 'я' && lcch >= 'а');
+    }
 
     boolean isWord(String word) {
         for (int i = 0; i < word.length(); i++) {
@@ -26,9 +26,12 @@ class Worker {
     }
 
     String[] splitter(String text) {
-        return new ArrayList<>(Arrays.asList(text.split("[^a-zA-Z']")))
+        return new ArrayList<>(Arrays.asList(text.split("[^a-zA-Zа-яА-Я']")))
                 .stream()
-                .filter(this::isWord).toArray(String[]::new);
+                .distinct()
+                .filter(this::isWord)
+                .filter(word -> word.length() <= 30)
+                .toArray(String[]::new);
     }
 
     String[] sortByVowels(String[] words) {
@@ -70,7 +73,7 @@ class Worker {
     }
 
     String readFromFile(String path) throws FileNotFoundException {
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8));
         return bufferedReader.lines().collect(Collectors.joining("\n"));
     }
 

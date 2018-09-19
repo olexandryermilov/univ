@@ -33,14 +33,6 @@ public class Main {
             System.out.println(Messages.WRONG_USAGE_MESSAGE);
             return;
         }
-        System.out.println("Please, write path to file");
-        Scanner scanner = new Scanner(System.in);
-        path = scanner.nextLine();
-        File file = new File(path);
-        if (!file.exists()) {
-            System.out.println(Messages.FILE_NOT_EXISTS_MESSAGE);
-            return;
-        }
         Worker worker = new Worker();
         System.out.println(Arrays.deepToString(worker.doJob(path)));
     }
