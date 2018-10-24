@@ -1,10 +1,16 @@
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         Lexeme lexeme = new Lexeme(Lexeme.Type.HEX, 0, 0);
         System.out.println("\n");
         String[] text = {"(println \"Hello world!\")", "(defn square [x]\n" +
@@ -22,6 +28,8 @@ public class Main {
                 "(= 1 1) ; => true\n" +
                 "(= 2 1) ; => false", "(if false \"a\" \"b\")\n" +
                 "0x9999222AA3 0035 0.34 def let letnfdasfs "};
+        List<String> textList = Arrays.asList(text);
+        textList.add(readFromFile("input.txt"));
         Arrays.stream(text).forEach(
                 x -> {
                     runAll(x);
@@ -29,6 +37,12 @@ public class Main {
                         System.out.println();
                 }
         );
+
+    }
+
+    static String readFromFile(String path) throws FileNotFoundException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8));
+        return bufferedReader.lines().collect(Collectors.joining("\n"));
     }
 
     private static void runAll(String text) {
