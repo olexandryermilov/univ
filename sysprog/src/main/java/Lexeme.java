@@ -46,29 +46,23 @@ public class Lexeme {
         SINGLE_COMMENT(";(.|)*\\n"),
         COMMENT(new TypeName("Comment"), SINGLE_COMMENT.pattern),
         NAMESPACE(new TypeName("Namespace"), "\\(ns \\w*\\)\\n"),
-
-        STRING("\".*\""),
-        CHAR("\'.*\'"),
         LITERALS(new TypeName("Literals"), "\"[^\"]*\""),
 
-        FLOAT("(\\d+\\.\\d*|\\.\\d+|\\d+)([eE][+-]?\\d+)?"),
+        FLOAT(new TypeName("Float"), "(\\d+\\.\\d*|\\.\\d+|\\d+)([eE][+-]?\\d+)?"),
 
-        HEX("0x[0-9a-fA-F]+[LlUu]*"),
-        OCT("0[0-7]+[LlUu]*"),
-        DEC("\\d+[LlUu]*"),
-        INTEGER(HEX.pattern, OCT.pattern, DEC.pattern),
-        NUMBER(new TypeName("Number"), FLOAT.pattern, INTEGER.pattern),
+        HEX(new TypeName("Hex number"),"0x[0-9a-fA-F]+[LlUu]*"),
+        OCT(new TypeName("Oct number"),"0[0-7]+[LlUu]*"),
+        DEC(new TypeName("Decimal number"), "\\d+[LlUu]*"),
+        BOOLEAN(new TypeName("Boolean"), "(false|true)"),
+        //INTEGER(HEX.pattern, OCT.pattern, DEC.pattern),
+        //NUMBER(new TypeName("Number"), FLOAT.pattern, INTEGER.pattern),
 
         KEYWORD(
                 new TypeName("KeyWord"),
-                "if|then|do|let|fn|apply|def|"
-                        + "defn|loop|recur|throw|try|catch|finally|monitor-enter|monitor-exit|new|set!|:as|:keys"),
+                "(if|then|do|let|fn|apply|def|"
+                        + "defn|loop|recur|throw|try|catch|finally|monitor-enter|monitor-exit|new|set!|:as|:keys) "),
 
         OPERATOR(new TypeName("Operator"), "~|not|%|^|&|\\*|\\+|=|\\||\\?|:|<|>|\\|/|-"),
-        TYPE(
-                new TypeName("Type"),
-                "(bool|int|uint8|uint16|uint32|uint64|long|float|short|double|char|"
-                        + "unsigned|signed|void|wchar_t)[*&]?"),
         PUNCTUATION(new TypeName("Punctuation"), "[()\\[\\],.]");
         private final TypeName typeName;
         private final String pattern;

@@ -20,7 +20,8 @@ public class Main {
                 "\n" +
                 "; Equality is =\n" +
                 "(= 1 1) ; => true\n" +
-                "(= 2 1) ; => false", "(if false \"a\" \"b\")"};
+                "(= 2 1) ; => false", "(if false \"a\" \"b\")\n" +
+                "0x9999222AA3 0035 0.34 def let letnfdasfs "};
         Arrays.stream(text).forEach(
                 x -> {
                     runAll(x);
@@ -35,12 +36,14 @@ public class Main {
 
         lexemes.addAll(findLexemes(text, Lexeme.Type.COMMENT));
         lexemes.addAll(findLexemes(text, Lexeme.Type.LITERALS));
-        //lexemes.addAll(findLexemes(text, Lexeme.Type.MACRO));
         lexemes.addAll(findLexemes(text, Lexeme.Type.KEYWORD));
 
         lexemes.addAll(findLexemes(text, Lexeme.Type.OPERATOR));
-        lexemes.addAll(findLexemes(text, Lexeme.Type.NUMBER));
-        //lexemes.addAll(findLexemes(text, Lexeme.Type.TYPE));
+        lexemes.addAll(findLexemes(text, Lexeme.Type.HEX));
+        lexemes.addAll(findLexemes(text, Lexeme.Type.OCT));
+        lexemes.addAll(findLexemes(text, Lexeme.Type.DEC));
+        lexemes.addAll(findLexemes(text, Lexeme.Type.FLOAT));
+        lexemes.addAll(findLexemes(text, Lexeme.Type.BOOLEAN));
         lexemes.addAll(findLexemes(text, Lexeme.Type.PUNCTUATION));
 
         System.out.println(solve(text, lexemes));
@@ -58,6 +61,8 @@ public class Main {
 
     private static String solve(String text, List<Lexeme> lexemes) {
         StringBuilder builder = new StringBuilder();
+        boolean[] skip = new boolean[text.length()];
+        for (int i = 0; i < skip.length; i++) skip[i] = false;
 
         lexemes.sort(
                 (x, y) ->
@@ -67,16 +72,28 @@ public class Main {
         int l = text.length();
         for (Lexeme lexeme : lexemes) {
             if (lexeme.getEnd() <= l) {
-                builder.append(lexeme.getType() + ": " + text.substring(lexeme.getStart(), lexeme.getEnd()) + "\n");//lexeme.getStart() + " " + lexeme.getEnd()+"\n");
+                builder.append(lexeme.getType() + ": " + text.substring(lexeme.getStart(), lexeme.getEnd()) + "\n");
+                for (int i = lexeme.getStart(); i < lexeme.getEnd(); i++) skip[i] = true;
                 l = lexeme.getStart();
             }
         }
-        return text + "\n" + String.join("\n", myReverse(Arrays.asList(builder.toString().split("\n"))));
+
+        return text + "\n" + String.join("\n", myReverse(Arrays.asList(builder.toString().split("\n"))))+getUnknown(text, skip);
+    }
+
+    private static String getUnknown(String text, boolean[] skip) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < skip.length; i++) {
+            if (!skip[i])
+                if((sb.toString().length()>0&& (sb.toString().charAt(sb.toString().length()-1))!=' ')||text.charAt(i)!=' ')
+                    sb.append(text.charAt(i));
+        }
+        return "\nUnknown: "+ sb.toString()+"\n";
     }
 
     private static List<String> myReverse(List<String> arr) {
         List<String> res = new ArrayList<>();
-        for(int i = arr.size() - 1; i>=0;i--){
+        for (int i = arr.size() - 1; i >= 0; i--) {
             res.add(arr.get(i));
         }
         return res;
