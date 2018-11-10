@@ -12,8 +12,7 @@ import java.util.stream.Collectors;
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         Lexeme lexeme = new Lexeme(Lexeme.Type.HEX, 0, 0);
-        System.out.println("\n");
-        String[] text = {"(println \"Hello world!\")", "(defn square [x]\n" +
+        String[] text = {/*"(println \"Hello world!\")", "(defn square [x]\n" +
                 "  (* x x))", "; More basic examples:\n" +
                 "\n" +
                 "; str will create a string out of all its arguments\n" +
@@ -27,9 +26,7 @@ public class Main {
                 "; Equality is =\n" +
                 "(= 1 1) ; => true\n" +
                 "(= 2 1) ; => false", "(if false \"a\" \"b\")\n" +
-                "0x9999222AA3 0035 0.34 def let letnfdasfs "};
-        List<String> textList = Arrays.asList(text);
-        textList.add(readFromFile("input.txt"));
+                "0x9999222AA3 0035 0.34 def let letnfdasfs ",*/ readFromFile("input.txt")};
         Arrays.stream(text).forEach(
                 x -> {
                     runAll(x);
@@ -40,7 +37,7 @@ public class Main {
 
     }
 
-    static String readFromFile(String path) throws FileNotFoundException {
+    private static String readFromFile(String path) throws FileNotFoundException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8));
         return bufferedReader.lines().collect(Collectors.joining("\n"));
     }
@@ -59,7 +56,7 @@ public class Main {
         lexemes.addAll(findLexemes(text, Lexeme.Type.FLOAT));
         lexemes.addAll(findLexemes(text, Lexeme.Type.BOOLEAN));
         lexemes.addAll(findLexemes(text, Lexeme.Type.PUNCTUATION));
-
+        //solve(text,lexemes);
         System.out.println(solve(text, lexemes));
     }
 
@@ -86,23 +83,33 @@ public class Main {
         int l = text.length();
         for (Lexeme lexeme : lexemes) {
             if (lexeme.getEnd() <= l) {
-                builder.append(lexeme.getType() + ": " + text.substring(lexeme.getStart(), lexeme.getEnd()) + "\n");
+                System.out.println(lexeme.getType().toString());
+                if (!lexeme.getType().toString().startsWith("Comment"))
+                    builder.append("<" + text.substring(lexeme.getStart(), lexeme.getEnd()) + ": " + lexeme.getType() + ">\n");
+                else
+                    builder.append("<" + text.substring(lexeme.getStart(), lexeme.getEnd()).replace("\n", "") + ": " + lexeme.getType() + ">\n");
                 for (int i = lexeme.getStart(); i < lexeme.getEnd(); i++) skip[i] = true;
                 l = lexeme.getStart();
             }
         }
 
-        return text + "\n" + String.join("\n", myReverse(Arrays.asList(builder.toString().split("\n"))))+getUnknown(text, skip);
+        return text + "\n" + String.join("\n", myReverse(Arrays.asList(builder.toString().split("\n")))) + getUnknown(text, skip);
     }
 
     private static String getUnknown(String text, boolean[] skip) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < skip.length; i++) {
             if (!skip[i])
-                if((sb.toString().length()>0&& (sb.toString().charAt(sb.toString().length()-1))!=' ')||text.charAt(i)!=' ')
+                if ((sb.length() == 0 && text.charAt(i) != ' ') || (sb.length() > 0 && (sb.toString().charAt(sb.toString().length() - 1) != ' ' || text.charAt(i) != ' ')))
                     sb.append(text.charAt(i));
         }
-        return "\nUnknown: "+ sb.toString()+"\n";
+        return "\n<" + cleanString(sb.toString().replace("\n", "")) + ": Unknown>\n";
+    }
+
+    private static String cleanString(String text) {
+        while (text.contains("  "))
+            text = text.replace("  ", " ");
+        return text;
     }
 
     private static List<String> myReverse(List<String> arr) {

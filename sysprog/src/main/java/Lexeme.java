@@ -60,7 +60,7 @@ public class Lexeme {
         KEYWORD(
                 new TypeName("KeyWord"),
                 "(if|then|do|let|fn|apply|def|"
-                        + "defn|loop|recur|throw|try|catch|finally|monitor-enter|monitor-exit|new|set!|:as|:keys) "),
+                        + "defn|loop|recur|throw|try|catch|finally|monitor-enter|monitor-exit|new|set!|:as|:keys|class|nil) "),
 
         OPERATOR(new TypeName("Operator"), "~|not|%|^|&|\\*|\\+|=|\\||\\?|:|<|>|\\|/|-"),
         PUNCTUATION(new TypeName("Punctuation"), "[()\\[\\],.]");
@@ -85,7 +85,7 @@ public class Lexeme {
 
         @Override
         public String toString() {
-            return this.typeName + ": ";
+            return this.typeName.getName();
         }
     }
 }
