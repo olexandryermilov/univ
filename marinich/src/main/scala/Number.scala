@@ -1,4 +1,9 @@
+import scala.collection.mutable
+
 class Number(var value: String, var sign: Char) {
+
+  import Number._
+
   private val zeroCharCode: Int = '0'
 
   def length = value.length
@@ -267,6 +272,16 @@ class Number(var value: String, var sign: Char) {
     this.value = "0" + this.value
   }
 
+  def inverseElementForMod(mod: Number): Option[Number] = {
+    val (g, x, _) = gcdExtended(this, mod)
+    if (g == Number(1)) {
+      Some((x % mod + mod) % mod)
+    }
+    else {
+      None
+    }
+  }
+
 }
 
 object Number extends App {
@@ -323,7 +338,6 @@ object Number extends App {
     */
   def solveEquation(a: Number, b: Number, m: Number): Option[Number] = {
     var (g, x1, y1) = gcdExtended(a.abs(), m.abs())
-    println(g + " " + x1 + " " + y1)
     if (b % g == 0) {
       x1 *= b div g
       y1 *= b div g
@@ -332,6 +346,26 @@ object Number extends App {
       Some(x1)
     }
     else None
+  }
+
+  def solveSystem(a: Seq[Number], m: Seq[Number]): Option[Number] = {
+    var x: mutable.Seq[Number] = mutable.Seq()
+    for (i <- a.indices) {
+      x = x ++ Seq(a(i))
+      for (j <- 0 until i) {
+        val r = reversed(m, j, i).getOrElse(return None)
+        x(i) = r * (x(i) - x(j))
+        x(i) = x(i) % m(i)
+        if (x(i) < 0) x(i) = x(i) + m(i)
+      }
+    }
+    var res = Number(0)
+    var mult = Number(1)
+    for (i <- x.indices) {
+      res = res + x(i) * mult
+      mult = mult * m(i)
+    }
+    Some(res)
   }
 
   def gcd(a: Number, b: Number): Number = {
@@ -351,5 +385,7 @@ object Number extends App {
     }
   }
 
-  println(solveEquation(111, 75, 321))
+  def reversed(m: Seq[Number], i: Int, j: Int): Option[Number] = {
+    m(i).inverseElementForMod(m(j))
+  }
 }

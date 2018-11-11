@@ -2,6 +2,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class NumbersSpec extends FlatSpec with Matchers {
 
+  import Number._
   "+" should
     "7 + 6  == 13" in {
     val first = 7
@@ -343,5 +344,13 @@ class NumbersSpec extends FlatSpec with Matchers {
         (Number(i) - Number(j)) should be(Number(i - j))
       }
     }
+  }
+
+  "solve system" should "solve some system" in {
+    solveSystem(m = Seq(7, 5, 101), a = Seq(3, 1, 5)) should be(Some(Number(1116)))
+  }
+
+  "solve equation" should "solve equation from book" in {
+    solveEquation(111, 75, 321) should be(Some(Number(-650)))
   }
 }
