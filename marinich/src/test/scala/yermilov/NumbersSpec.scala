@@ -1,3 +1,5 @@
+package yermilov
+
 import org.scalatest.{FlatSpec, Matchers}
 
 class NumbersSpec extends FlatSpec with Matchers {

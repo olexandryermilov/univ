@@ -1,3 +1,4 @@
+package yermilov
 import scala.collection.mutable
 
 class Number(var value: String, var sign: Char) {
