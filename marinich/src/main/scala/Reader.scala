@@ -96,6 +96,18 @@ object Reader extends App {
               case "sqrt" =>
                 val a = stack.head
                 res = a sqrt() toString
+              case ">" =>
+                val a = stack.last
+                val b = stack(stack.length - 2)
+                res = (a > b) toString
+              case "<" =>
+                val a = stack.last
+                val b = stack(stack.length - 2)
+                res = (a < b) toString
+              case "==" =>
+                val a = stack.last
+                val b = stack(stack.length - 2)
+                res = (a == b) toString
             }
           }
         }
