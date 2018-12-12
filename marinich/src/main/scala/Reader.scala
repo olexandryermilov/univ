@@ -5,11 +5,57 @@ import yermilov.Number
 object Reader extends App {
 
   import Reader._
+  import yermilov.Cryptography._
 
   override def main(args: Array[String]): Unit = {
     while (true) {
+      //prepare()
       val x = new BufferedReader(new InputStreamReader(System.in))
-      println(parse(x.readLine()))
+      while (true) {
+        println(
+          """
+            |1. Перевірити чи є число простим
+            |2. Факторизувати число
+            |3. Функція Ейлера
+            |4. Функція Мьобіуса
+            |5. Символ Лежандра
+            |6. Символ Якобі
+            |7. Дискретний квадратний корінь
+            |8. Дискретний логарифм
+            |9. Криптосистема над еліптичними кривими
+            |10. Криптосистема Ель-Гамаля
+          """.stripMargin)
+        var r = x.readLine().toInt
+        r match {
+          case 1 => var num = Number(x.readLine().reverse, '+')
+            println(isPrime(num, 1000))
+          case 2 => var num = Number(x.readLine().reverse, '+')
+            println(rhoPollardFactorize(num))
+          case 3 => var num = Number(x.readLine().reverse, '+')
+            println(euler(num))
+          case 4 => var num = Number(x.readLine().reverse, '+')
+            println(mebius(num))
+          case 5 => var a = Number(x.readLine().reverse, '+')
+            var b = Number(x.readLine().reverse, '+')
+            println(lezhandr(a, b))
+          case 6 => var a = Number(x.readLine().reverse, '+')
+            var b = Number(x.readLine().reverse, '+')
+            println(jacobi(a, b))
+          case 7 => var a = Number(x.readLine().reverse, '+')
+            var b = Number(x.readLine().reverse, '+')
+            println(s"$a $b")
+            println(discreteRoot(a, b))
+          case 8=> var a = Number(x.readLine().reverse, '+')
+            var b = Number(x.readLine().reverse, '+')
+            var p = Number(x.readLine().reverse, '+')
+            println(discreteLog(a, b, p))
+          case 9=> var num = Number(x.readLine().reverse, '+')
+            elHamalCr(Some(num))
+          case 10 => var num = Number(x.readLine().reverse, '+')
+            elHamal(Some(num))
+        }
+      }
+      //println(parse(x.readLine()))
     }
   }
 
@@ -142,14 +188,17 @@ object Reader extends App {
       for (i <- 1 until str.length) {
         if (str(i) < '0' || str(i) > '9') return false
       }
-    if (str.head == '+' || str.head == '-' && str.length == 1)return  false
+    if (str.head == '+' || str.head == '-' && str.length == 1) return false
     else if (str.head >= '0' && str.head <= '9')
       for (i <- 0 until str.length) {
         if (str(i) < '0' || str(i) > '9') return false
       }
-    else{
+    else {
       return false
     }
     true
   }
 }
+////999999000001
+////70312316987348207
+//17649306047

@@ -1,7 +1,9 @@
 package yermilov
-import scala.collection.mutable
 
-class Number(var value: String, var sign: Char) {
+import scala.collection.mutable
+import scala.util.Random
+
+class Number(var value: String, var sign: Char) extends Comparable[Number] {
 
   import Number._
 
@@ -99,7 +101,7 @@ class Number(var value: String, var sign: Char) {
   }
 
   def /(n: Number): (Number, Number) = {
-    if (n > this) (Number(0), this)
+    if (n.abs() > this.abs()) (Number(0), this)
     else {
       var divider = n.abs()
       var resDiv = new StringBuilder
@@ -120,7 +122,8 @@ class Number(var value: String, var sign: Char) {
         num = car * Number(10) + Number(if (i < a.length) a(i).toString else "0", '+')
       }
       var sign = if (this.sign == n.sign) '+' else '-'
-      (Number(resDiv.toString.reverse, sign), car)
+      var res = Number(resDiv.toString.reverse, sign)
+      (res, this - n * res)
     }
   }
 
@@ -221,19 +224,46 @@ class Number(var value: String, var sign: Char) {
     }
     else {
       if (n == 1) {
-        this
+        return this
       }
       else if (n == 2) {
-        this * this
+        return this * this
       }
       else {
-        (this ^ (n div 2) ^ 2) * (this ^ (n % 2))
+        var ndiv2 = n / 2
+        ((this ^ ndiv2._1) ^ 2) * (this ^ ndiv2._2)
       }
     }
   }
 
   def ^%(n: Number, mod: Number): Number = {
-    (this ^ n) % mod
+    if (n == 0) {
+      1
+    }
+    else {
+        if (n==0) return 1 else if (n == 1) {
+          return this % mod
+        }
+        else if (n == 2) {
+          return ((this % mod) * (this % mod)) % mod
+        }
+          else if(n==3) {
+          return (this * this * this) % mod
+        }
+          else if(n==4) {
+            return (this*this*this*this) % mod
+          }
+        else if (n==6){
+          return (this*this*this*this*this*this) % mod
+        }
+        else {
+          var ndiv2 = n / 2
+          var a = (this ^% (ndiv2._1, mod)) % mod
+          var dif = if(n%2==0) Number(1) else this
+          return ((a ^ 2)
+            * dif) % mod
+        }
+      }
   }
 
   def sqrt(): Number = {
@@ -283,6 +313,11 @@ class Number(var value: String, var sign: Char) {
     }
   }
 
+  def rev(mod: Number): Number = {
+    extEuclid(this, mod, 0, 0, mod)._1
+  }
+
+  override def compareTo(o: Number): Int = if (this > o) 1 else if (this == o) 0 else -1
 }
 
 object Number extends App {
@@ -321,7 +356,11 @@ object Number extends App {
     else s
   }
 
-  def apply(value: String, sign: Char) = new Number(cleanLeadingZeroes(value), sign)
+  def apply(value: String, sign: Char) = {
+    val cleaned = cleanLeadingZeroes(value)
+    if (cleaned == "0") new Number(cleaned, '+')
+    else new Number(cleaned, sign)
+  }
 
   def apply(number: Number): Number = number
 
@@ -370,7 +409,7 @@ object Number extends App {
   }
 
   def gcd(a: Number, b: Number): Number = {
-    if (b == Number(0))
+    if (a == 0) b else if (b == Number(0))
       a
     else
       gcd(b, a % b)
@@ -386,7 +425,24 @@ object Number extends App {
     }
   }
 
+  def extEuclid(a: Number, b: Number, x: Number, y: Number, mod: Number): (Number, Number, Number) = {
+    if (a == 0) {
+      (0, 1, b)
+    } else {
+      var (x1, y1, d) = extEuclid(b % a, a, 0, 0, mod)
+      (((mod * mod + y1) - (b div a) * x1) % mod, x1, d)
+    }
+  }
+
   def reversed(m: Seq[Number], i: Int, j: Int): Option[Number] = {
     m(i).inverseElementForMod(m(j))
+  }
+
+
+  implicit val ord: Ordering[Number] = (x, y) => if (x < y) -1 else if (x == y) 0 else 1
+
+  def random(a: Number, b: Number): Number = {
+    if (a > b) throw new Exception("fsdfsfA") else if (a == b) a else
+      (Number(Random.nextLong).abs() % (b - a + 1)) + a
   }
 }

@@ -2,6 +2,8 @@ package yermilov
 
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.util.Random
+
 class NumbersSpec extends FlatSpec with Matchers {
 
   import Number._
@@ -245,6 +247,16 @@ class NumbersSpec extends FlatSpec with Matchers {
     }
   }
 
+  "random" should "be sane" in{
+    for(i<-1 to 10){
+      var a = Random.nextInt(15)
+      var b = 15 + Random.nextInt(100)
+      var big = random(a,b)
+      //println(s"$big $a $b")
+      big<=b&&big>=a should be(true)
+    }
+  }
+
   "/" should "100/3" in {
     val first = 100
     val second = 3
@@ -252,8 +264,8 @@ class NumbersSpec extends FlatSpec with Matchers {
   }
 
   it should "pentest" in {
-    for (i <- 5000 to 5000) {
-      for (j <- -5000 to 5000)
+    for (i <- -500 to 500) {
+      for (j <- -500 to 500)
         if (j != 0)
           Number(i) / Number(j) should be((Number(i / j), Number(i % j)))
     }
@@ -346,6 +358,20 @@ class NumbersSpec extends FlatSpec with Matchers {
         (Number(i) - Number(j)) should be(Number(i - j))
       }
     }
+  }
+
+  "^%" should "pentest" in {
+    for (i <- 0 to 5000) {
+      for (j <- 0 to 5) {
+        for (k <- 2 to 30) {
+          if(i+j!=0)(Number(i) ^%(Number(j),Number(k))) should be(Number(pow(i,j)%k))
+        }
+      }
+    }
+  }
+
+  it should "be sane" in {
+    Number("100000000000000",'+') ^%(Number("42432342000034243",'+'),Number(10))
   }
 
   "solve system" should "solve some system" in {
