@@ -7,7 +7,8 @@ class CreateTableCommand extends Command {
   override def run(parameters: Map[String, Any], databaseManager: DatabaseManager, outputManager: OutputManager): Unit = {
     val name = parameters.getOrElse("name", "").asInstanceOf[String]
     val columns = parameters.getOrElse("columns", "").asInstanceOf[List[Column]]
-    val table = databaseManager.createTable(name, columns)
+    val key = parameters.getOrElse("key", "").asInstanceOf[String]
+    val table = databaseManager.createTable(name, columns, key)
     outputManager.tableCreated(table)
   }
 }
