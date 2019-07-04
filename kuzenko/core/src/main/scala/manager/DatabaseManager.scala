@@ -3,17 +3,17 @@ package manager
 import domain.{Column, Database, Row, Table}
 
 class DatabaseManager {
-  def createTable(name: String, columns: Seq[Column], key: String): Table = ???
+  def createTable(tableName: String, columns: Seq[Column], key: String, databaseName: String): Table = ???
 
-  def addRowToTable(columnsWithValues: Seq[(Column, String)], name: String): Row = ???
+  def addRowToTable(columnsWithValues: Seq[(Column, String)], name: String, databaseName: String): Row = ???
 
-  def dropTable(name: String): Boolean = ???
+  def dropTable(tableName: String, databaseName: String): Boolean = ???
 
-  def findTable(name: String): Table = ???
+  def findTable(talbleName: String, databaseName: String): Table = ???
 
-  def removeRow(columnsAndValues: Seq[(Column, String)], name: String): Row = ???
+  def removeRow(columnsAndValues: Seq[(Column, String)], tableName: String, databaseName: String): Row = ???
 
-  def editRow(columnsAndValues: Seq[(Column, String)], name: String): Row = ???
+  def editRow(columnsAndValues: Seq[(Column, String)], tableName: String, databaseName: String): Row = ???
 
-  def viewAllTables(): Database = ???
+  def viewAllTables(databaseName: String): Database = ???
 }
