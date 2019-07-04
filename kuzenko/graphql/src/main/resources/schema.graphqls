@@ -1,0 +1,28 @@
+type Database {
+    name: String!
+    tables: [Table]!
+}
+
+type Table {
+    name: String!
+    rows: [Row!]
+    columns: [Column!]
+    key: String!
+}
+
+type Row {
+    values: [String!]!
+}
+
+type Column {
+    columnType: ColumnType!
+    columnName: String!
+}
+
+enum ColumnType {
+    INTEGER
+    REAL
+    STRING
+    CHAR
+}
+
