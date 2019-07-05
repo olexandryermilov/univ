@@ -26,3 +26,7 @@ enum ColumnType {
     CHAR
 }
 
+type Query {
+    databaseByName(name: String): Database
+}
+

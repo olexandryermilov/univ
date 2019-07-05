@@ -28,4 +28,6 @@ dependencies {
     implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:1.0'
     implementation 'com.google.guava:guava:26.0-jre'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.scala-lang:scala-library:2.11.12'
+    compile project(':core')
 }
