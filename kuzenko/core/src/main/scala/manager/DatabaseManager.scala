@@ -9,7 +9,7 @@ class DatabaseManager {
 
   def dropTable(tableName: String, databaseName: String): Boolean = ???
 
-  def findTable(talbleName: String, databaseName: String): Table = ???
+  def findTable(tableName: String, databaseName: String): Table = ???
 
   def removeRow(columnsAndValues: Seq[(Column, String)], tableName: String, databaseName: String): Row = ???
 
