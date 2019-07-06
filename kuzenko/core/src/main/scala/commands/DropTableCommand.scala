@@ -3,7 +3,7 @@ package commands
 import manager.{DatabaseManager, OutputManager}
 import utils.Parameters
 
-class DropTableCommand extends Command {
+object DropTableCommand extends Command {
   override def run(parameters: Map[String, Any], databaseManager: DatabaseManager, outputManager: OutputManager): Unit = {
     val tableName = parameters.getOrElse(Parameters.tableName, "").asInstanceOf[String]
     val databaseName = parameters.getOrElse(Parameters.databaseName, "").asInstanceOf[String]

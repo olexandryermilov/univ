@@ -4,7 +4,7 @@ import domain.Column
 import manager.{DatabaseManager, OutputManager}
 import utils.Parameters
 
-class CreateTableCommand extends Command {
+object CreateTableCommand extends Command {
   override def run(parameters: Map[String, Any], databaseManager: DatabaseManager, outputManager: OutputManager): Unit = {
     val tableName = parameters.getOrElse(Parameters.tableName, "").asInstanceOf[String]
     val databaseName = parameters.getOrElse(Parameters.databaseName, "").asInstanceOf[String]

@@ -3,6 +3,7 @@ package application;
 import graphql.schema.DataFetcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import utils.Parameters;
 
 @Component
 public class GraphQLDataFetchers {
@@ -12,7 +13,7 @@ public class GraphQLDataFetchers {
 
     public DataFetcher getDatabaseByNameFetcher(){
         return environment -> {
-            String databaseName = environment.getArgument("databaseName");
+            String databaseName = environment.getArgument(Parameters.databaseName());
             return databaseService.getDatabaseService(databaseName);
         };
     }
