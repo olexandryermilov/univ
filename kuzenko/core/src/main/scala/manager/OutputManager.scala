@@ -3,17 +3,17 @@ package manager
 import domain.{Column, Database, Row, Table}
 
 class OutputManager {
-  def tableCreated(table: Table): Unit = ???
+  def tableCreated(table: Table): Unit = println(s"Created table $table")
 
   def rowAdded(name: String, row: Row): Unit = ???
 
   def rowEdited(name: String, row: Row): Unit = ???
 
-  def tableDropped(name: String): Unit = ???
+  def tableDropped(name: String): Unit = println(s"Table $name dropped.")
 
   def rowRemoved(columnsAndValues: Seq[(Column, String)], tableName: String): Unit = ???
 
-  def tableFound(table: Table): Unit = ???
+  def tableFound(table: Table): Unit = println(s"Table found $table")
 
   def databaseFound(database: Database): Unit = ???
 

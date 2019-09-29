@@ -6,4 +6,6 @@ object Parameters {
   val key = "key"
   val columns = "columns"
   val databaseName = "databaseName"
+  val dbLocation = "./database/"
+  val extension = ".table"
 }
