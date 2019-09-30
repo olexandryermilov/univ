@@ -5,7 +5,7 @@ import utils.DBFileUtils
 
 class DatabaseManager {
   def createTable(tableName: String, columns: Seq[Column], key: String, databaseName: String): Table = {
-    val table = Table(Seq.empty, tableName, columns, key)
+    val table = Table(Seq.empty, tableName, columns.sortWith((a, b) => a.columnName.compareTo(b.columnName) < 0), key)
     DBFileUtils.saveTableTo(s"$databaseName/", table).getOrElse(println("Something went wrong"))
     table
   }
