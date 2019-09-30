@@ -5,7 +5,7 @@ import domain.{Column, Database, Row, Table}
 class OutputManager {
   def tableCreated(table: Table): Unit = println(s"Created table $table")
 
-  def rowAdded(name: String, row: Row): Unit = ???
+  def rowAdded(name: String, row: Row): Unit = println(s"Added $row to $name")
 
   def rowEdited(name: String, row: Row): Unit = ???
 

@@ -11,7 +11,11 @@ class DatabaseManager {
   }
 
   def addRowToTable(columnsWithValues: Seq[(Column, String)], name: String, databaseName: String): Row = {
-    ???
+    val sortedValues = columnsWithValues.sortWith(
+      (a, b) => a._1.columnName.compareTo(b._1.columnName) < 0
+    ).map(_._2)
+    DBFileUtils.addRow(s"$databaseName/", name, sortedValues)
+    Row(sortedValues)
   }
 
   def dropTable(tableName: String, databaseName: String): Boolean = {

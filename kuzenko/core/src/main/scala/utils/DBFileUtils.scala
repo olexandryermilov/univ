@@ -27,6 +27,19 @@ object DBFileUtils {
     FileUtils.moveFile(fileToDelete, newFile)
   }
 
+  def addRow(path: String, tableName: String, values: Seq[String]) = Try {
+    val table = readTable(path, tableName).get
+    val keyIndex = table.columns.map(_.columnName).indexOf(table.key)
+    val hasKey = table.rows.map(_.values).find(row => row(keyIndex) == values(keyIndex))
+    hasKey match {
+      case Some(_) => {
+        val newRows = table.rows.map(_.values).filter(row => row(keyIndex) != values(keyIndex)).map(values => Row(values))
+        saveTableTo(path, table.copy(rows = newRows))
+      }
+      case None => writeToFile(tablePath(path, tableName), "\n" + values.mkString(","), true)
+    }
+  }
+
   def readTable(path: String, tableName: String): Try[Table] = Try {
     println(tablePath(path, tableName))
     println(path, tableName)
