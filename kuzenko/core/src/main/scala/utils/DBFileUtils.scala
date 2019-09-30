@@ -43,7 +43,7 @@ object DBFileUtils {
   def readTable(path: String, tableName: String): Try[Table] = Try {
     println(tablePath(path, tableName))
     println(path, tableName)
-    val lines = readFile(tablePath(path, tableName))
+    val lines = readFile(tablePath(path, tableName)).filterNot(_.isEmpty)
     val columns = lines.head.split(",").map(
       column => {
         val splitted = column.split(" ").reverse
