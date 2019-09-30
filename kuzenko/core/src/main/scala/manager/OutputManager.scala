@@ -15,6 +15,6 @@ class OutputManager {
 
   def tableFound(table: Table): Unit = println(s"Table found $table")
 
-  def databaseFound(database: Database): Unit = ???
+  def databaseFound(database: Database): Unit = println(s"Database found $database")
 
 }

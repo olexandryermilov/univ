@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import domain.{Column, Row, Table, Type}
+import domain.{Column, Database, Row, Table, Type}
 import org.apache.commons.io.FileUtils
 
 import collection.JavaConverters._
@@ -36,7 +36,7 @@ object DBFileUtils {
   }
 
   def readTable(path: String, tableName: String): Try[Table] = Try {
-    val tablePath =  dbLocation + path + tableName + extension
+    val tablePath = dbLocation + path + tableName + extension
     val fileToRead = new File(tablePath)
     val lines = FileUtils.readLines(fileToRead, StandardCharsets.UTF_8.name()).asScala
     val columns = lines.head.split(",").map(
@@ -52,5 +52,14 @@ object DBFileUtils {
     val table = Table(rows, tableName, columns, "key")
     table
   }
+
+  def readDB(databaseName: String): Database =
+    Database(
+      FileUtils
+        .listFiles(new File(s"$dbLocation/$databaseName/"), null, false)
+        .asScala.map(fileName => readTable(s"$databaseName/", fileName.getName.dropRight(extension.length)).get)
+        .toSeq,
+      databaseName
+    )
 
 }

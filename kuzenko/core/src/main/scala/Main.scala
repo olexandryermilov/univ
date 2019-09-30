@@ -1,4 +1,4 @@
-import commands.{CreateTableCommand, DropTableCommand, FindTableCommand}
+import commands.{CreateTableCommand, DropTableCommand, FindTableCommand, ViewDatabaseCommand}
 import domain.{Column, Type}
 import manager.{DatabaseManager, OutputManager}
 import utils.Parameters
@@ -23,6 +23,13 @@ object Main {
     FindTableCommand.run(
       Map[String, Any](
         Parameters.tableName -> "table",
+        Parameters.databaseName -> "db"
+      ),
+      databaseManager,
+      outputManager
+    )
+    ViewDatabaseCommand.run(
+      Map[String, Any](
         Parameters.databaseName -> "db"
       ),
       databaseManager,
