@@ -26,5 +26,9 @@ class DatabaseManager {
 
   def editRow(columnsAndValues: Seq[(Column, String)], tableName: String, databaseName: String): Row = ???
 
-  def viewAllTables(databaseName: String): Database = ???
+  def viewAllTables(databaseName: String): Database = {
+    DBFileUtils.readDB(databaseName)
+  }
+
+  def mergeTables(tableName1: String, tableName2: String) = ???
 }
