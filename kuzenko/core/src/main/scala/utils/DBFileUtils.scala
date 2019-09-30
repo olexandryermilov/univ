@@ -1,10 +1,7 @@
 package utils
 
 import java.io.File
-import java.nio.charset.StandardCharsets
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import domain.{Column, Database, Row, Table, Type}
 import org.apache.commons.io.FileUtils
 
@@ -13,32 +10,27 @@ import scala.util.Try
 
 object DBFileUtils {
 
-  val mapper = new ObjectMapper()
-  mapper.registerModule(DefaultScalaModule)
-
   import Parameters._
+  import ScalaFileUtils._
 
   def saveTableTo(path: String, table: Table): Try[Unit] = Try {
-    val tablePath = dbLocation + path + table.name + extension
-    val file = new File(tablePath)
-    FileUtils.touch(file)
     val columns = table.columns.map(col => col.columnName + " " + Type.toName(col.columnType)).mkString(",")
-    FileUtils.writeStringToFile(file, columns + "\n", StandardCharsets.UTF_8.name())
+    writeToFile(tablePath(path, table.name), columns + "\n")
     val rows: String = table.rows.map(_.values.mkString(",")).mkString("\n")
-    FileUtils.writeStringToFile(file, rows, StandardCharsets.UTF_8.name(), true)
+    writeToFile(tablePath(path, table.name), rows, append = true)
+    writeToFile(keyPath(path, table.name), table.key)
   }
 
   def deleteTable(path: String, tableName: String): Try[Unit] = Try {
-    val tablePath = dbLocation + path + tableName + extension
-    val fileToDelete = new File(tablePath)
-    val newFile = new File(s"deleted/$tableName$extension")
+    val fileToDelete = new File(tablePath(path, tableName))
+    val newFile = new File(s"./deleted/$tableName$tableExtension")
     FileUtils.moveFile(fileToDelete, newFile)
   }
 
   def readTable(path: String, tableName: String): Try[Table] = Try {
-    val tablePath = dbLocation + path + tableName + extension
-    val fileToRead = new File(tablePath)
-    val lines = FileUtils.readLines(fileToRead, StandardCharsets.UTF_8.name()).asScala
+    println(tablePath(path, tableName))
+    println(path, tableName)
+    val lines = readFile(tablePath(path, tableName))
     val columns = lines.head.split(",").map(
       column => {
         val splitted = column.split(" ").reverse
@@ -49,17 +41,22 @@ object DBFileUtils {
       line =>
         Row(line.split(","))
     )
-    val table = Table(rows, tableName, columns, "key")
+
+    val key = readFile(keyPath(path, tableName)).head
+    val table = Table(rows, tableName, columns, key)
     table
   }
 
   def readDB(databaseName: String): Database =
     Database(
       FileUtils
-        .listFiles(new File(s"$dbLocation/$databaseName/"), null, false)
-        .asScala.map(fileName => readTable(s"$databaseName/", fileName.getName.dropRight(extension.length)).get)
+        .listFiles(new File(s"$dbLocation/$databaseName/"), Seq(tableExtension.drop(1)).toArray[String], false)
+        .asScala.map(fileName => readTable(s"$databaseName/", fileName.getName.dropRight(tableExtension.length)).get)
         .toSeq,
       databaseName
     )
 
+  private def tablePath(path: String, tableName: String): String = s"$dbLocation$path$tableName$tableExtension"
+
+  private def keyPath(path: String, tableName: String): String = s"$dbLocation$path$tableName$keyExtension"
 }

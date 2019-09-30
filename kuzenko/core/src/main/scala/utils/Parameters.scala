@@ -1,11 +1,12 @@
 package utils
 
 object Parameters {
-  val tableName = "tableName"
-  val columnsAndValues = "columnsAndValues"
-  val key = "key"
-  val columns = "columns"
-  val databaseName = "databaseName"
-  val dbLocation = "./database/"
-  val extension = ".table"
+  final val tableName = "tableName"
+  final val columnsAndValues = "columnsAndValues"
+  final val key = "key"
+  final val columns = "columns"
+  final val databaseName = "databaseName"
+  final val dbLocation = "./database/"
+  final val tableExtension = ".table"
+  final val keyExtension = ".key"
 }
