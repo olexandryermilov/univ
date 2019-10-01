@@ -22,9 +22,8 @@ object DBFileUtils {
   }
 
   def deleteTable(path: String, tableName: String): Try[Unit] = Try {
-    val fileToDelete = new File(tablePath(path, tableName))
-    val newFile = new File(s"./deleted/$tableName$tableExtension")
-    FileUtils.moveFile(fileToDelete, newFile)
+    deleteFile(tablePath(path, tableName), tableName, tableExtension)
+    deleteFile(keyPath(path, tableName), tableName, keyExtension)
   }
 
   def addRow(path: String, tableName: String, values: Seq[String]) = Try {
@@ -41,8 +40,6 @@ object DBFileUtils {
   }
 
   def readTable(path: String, tableName: String): Try[Table] = Try {
-    println(tablePath(path, tableName))
-    println(path, tableName)
     val lines = readFile(tablePath(path, tableName)).filterNot(_.isEmpty)
     val columns = lines.head.split(",").map(
       column => {

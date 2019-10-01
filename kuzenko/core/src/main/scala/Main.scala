@@ -33,6 +33,32 @@ object Main {
       databaseManager,
       outputManager
     )
+    AddRowCommand.run(
+      Map[String, Any](
+        Parameters.tableName -> "table",
+        Parameters.databaseName -> "db",
+        Parameters.columnsAndValues ->
+          Seq[(Column, String)](
+            Column(Type.Integer, "column1") -> "15444",
+            Column(Type.Integer, "column2") -> "32"
+          )
+      ),
+      databaseManager,
+      outputManager
+    )
+    AddRowCommand.run(
+      Map[String, Any](
+        Parameters.tableName -> "table",
+        Parameters.databaseName -> "db",
+        Parameters.columnsAndValues ->
+          Seq[(Column, String)](
+            Column(Type.Integer, "column1") -> "1reg",
+            Column(Type.Integer, "column2") -> "32"
+          )
+      ),
+      databaseManager,
+      outputManager
+    )
     FindTableCommand.run(
       Map[String, Any](
         Parameters.tableName -> "table",

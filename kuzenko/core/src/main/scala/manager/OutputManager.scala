@@ -19,4 +19,6 @@ class OutputManager {
 
   def mergeTables(tableName1: String, tableName2: String): Unit = println(s"Tables merged")
 
+  def failure(e: Throwable): Unit = println(e.getMessage)
+
 }
