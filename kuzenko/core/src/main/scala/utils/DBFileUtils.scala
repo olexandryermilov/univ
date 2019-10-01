@@ -6,7 +6,7 @@ import domain.{Column, Database, Row, Table, Type}
 import org.apache.commons.io.FileUtils
 
 import collection.JavaConverters._
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 object DBFileUtils {
 
@@ -26,16 +26,16 @@ object DBFileUtils {
     deleteFile(keyPath(path, tableName), tableName, keyExtension)
   }
 
-  def addRow(path: String, tableName: String, values: Seq[String]) = Try {
+  def addRow(path: String, tableName: String, newRow: Seq[String]): Try[Unit] = Try {
     val table = readTable(path, tableName).get
     val keyIndex = table.columns.map(_.columnName).indexOf(table.key)
-    val hasKey = table.rows.map(_.values).find(row => row(keyIndex) == values(keyIndex))
+    val hasKey = table.rows.map(_.values).find(row => row(keyIndex) == newRow(keyIndex))
     hasKey match {
       case Some(_) => {
-        val newRows = table.rows.map(_.values).filter(row => row(keyIndex) != values(keyIndex)).map(values => Row(values))
+        val newRows = table.rows.map(_.values).filter(row => row(keyIndex) != newRow(keyIndex)).map(values => Row(values)) ++ Seq(Row(newRow))
         saveTableTo(path, table.copy(rows = newRows))
       }
-      case None => writeToFile(tablePath(path, tableName), "\n" + values.mkString(","), true)
+      case None => writeToFile(tablePath(path, tableName), "\n" + newRow.mkString(","), true)
     }
   }
 
