@@ -9,4 +9,5 @@ object Parameters {
   final val dbLocation = "./database/"
   final val tableExtension = ".table"
   final val keyExtension = ".key"
+  final val row = "row"
 }

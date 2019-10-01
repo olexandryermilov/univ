@@ -1,4 +1,4 @@
-import commands.{AddRowCommand, CreateTableCommand, DropTableCommand, FindTableCommand, ViewDatabaseCommand}
+import commands.{AddRowCommand, CreateTableCommand, DropTableCommand, FindTableCommand, RemoveRowCommand, ViewDatabaseCommand}
 import domain.{Column, Type}
 import manager.{DatabaseManager, OutputManager}
 import utils.Parameters
@@ -25,10 +25,10 @@ object Main {
         Parameters.tableName -> "table",
         Parameters.databaseName -> "db",
         Parameters.columnsAndValues ->
-        Seq[(Column, String)](
-          Column(Type.Integer, "column1") -> "15",
-          Column(Type.Integer, "column2") -> "32"
-        )
+          Seq[(Column, String)](
+            Column(Type.Integer, "column1") -> "15",
+            Column(Type.Integer, "column2") -> "32"
+          )
       ),
       databaseManager,
       outputManager
@@ -68,6 +68,15 @@ object Main {
             Column(Type.Integer, "column1") -> "1reg",
             Column(Type.Integer, "column2") -> "32"
           )
+      ),
+      databaseManager,
+      outputManager
+    )
+    RemoveRowCommand.run(
+      Map[String, Any](
+        Parameters.tableName -> "table",
+        Parameters.databaseName -> "db",
+        Parameters.row -> "33"
       ),
       databaseManager,
       outputManager

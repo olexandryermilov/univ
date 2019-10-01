@@ -11,7 +11,7 @@ class OutputManager {
 
   def tableDropped(name: String): Unit = println(s"Table $name dropped.")
 
-  def rowRemoved(columnsAndValues: Seq[(Column, String)], tableName: String): Unit = ???
+  def rowRemoved(keyValue: String, tableName: String): Unit = println(s"Row with key == $keyValue removed")
 
   def tableFound(table: Table): Unit = println(s"Table found $table")
 

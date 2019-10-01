@@ -6,7 +6,7 @@ import domain.{Column, Database, Row, Table, Type}
 import org.apache.commons.io.FileUtils
 
 import collection.JavaConverters._
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 object DBFileUtils {
 
@@ -65,6 +65,13 @@ object DBFileUtils {
         .toSeq,
       databaseName
     )
+
+  def removeRow(path: String, tableName: String, value: String): Try[Unit] = Try {
+    val table = readTable(path, tableName).get
+    val keyIndex = table.columns.map(_.columnName).indexOf(table.key)
+    val newTable: Table = table.copy(rows = table.rows.map(_.values).filterNot(row => row(keyIndex) == value).map(Row))
+    if (newTable != table) saveTableTo(path, newTable)
+  }
 
   private def tablePath(path: String, tableName: String): String = s"$dbLocation$path$tableName$tableExtension"
 

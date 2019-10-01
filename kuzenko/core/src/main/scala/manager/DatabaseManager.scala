@@ -30,7 +30,9 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator) {
     DBFileUtils.readTable(s"$databaseName/", tableName).get
   }
 
-  def removeRow(columnsAndValues: Seq[(Column, String)], tableName: String, databaseName: String): Row = ???
+  def removeRow(value: String, tableName: String, databaseName: String): Try[Unit] = {
+    DBFileUtils.removeRow(s"$databaseName/", tableName, value)
+  }
 
   def editRow(columnsAndValues: Seq[(Column, String)], tableName: String, databaseName: String): Row = ???
 
