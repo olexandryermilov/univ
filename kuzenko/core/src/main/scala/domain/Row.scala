@@ -1,3 +1,3 @@
 package domain
 
-case class Row(values: Seq[String])
+case class Row(values: List[String])

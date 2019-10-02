@@ -7,7 +7,7 @@ import domain.Type._
 
 class ValueValidator {
 
-  def validateValues(columnsWithValue: Seq[(Column, String)]): Try[Unit] = {
+  def validateValues(columnsWithValue: List[(Column, String)]): Try[Unit] = {
     val res = columnsWithValue.map(validateValue).filter(_.isFailure)
     if (res.nonEmpty) res.head else Success()
   }

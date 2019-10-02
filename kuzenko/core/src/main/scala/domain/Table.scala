@@ -1,3 +1,3 @@
 package domain
 
-case class Table(rows: Seq[Row], name: String, columns: Seq[Column], key: String)
+case class Table(rows: List[Row], name: String, columns: List[Column], key: String)

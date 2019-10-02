@@ -8,7 +8,7 @@ import org.apache.commons.io.FileUtils
 import collection.JavaConverters._
 import scala.util.Try
 
-object DBFileUtils {
+class DBFileUtils {
 
   import Parameters._
   import ScalaFileUtils._
@@ -26,13 +26,13 @@ object DBFileUtils {
     deleteFile(keyPath(path, tableName), tableName, keyExtension)
   }
 
-  def addRow(path: String, tableName: String, newRow: Seq[String]): Try[Unit] = Try {
+  def addRow(path: String, tableName: String, newRow: List[String]): Try[Unit] = Try {
     val table = readTable(path, tableName).get
     val keyIndex = table.columns.map(_.columnName).indexOf(table.key)
     val hasKey = table.rows.map(_.values).find(row => row(keyIndex) == newRow(keyIndex))
     hasKey match {
       case Some(_) => {
-        val newRows = table.rows.map(_.values).filter(row => row(keyIndex) != newRow(keyIndex)).map(values => Row(values)) ++ Seq(Row(newRow))
+        val newRows = table.rows.map(_.values).filter(row => row(keyIndex) != newRow(keyIndex)).map(values => Row(values)) ++ List(Row(newRow))
         saveTableTo(path, table.copy(rows = newRows))
       }
       case None => writeToFile(tablePath(path, tableName), "\n" + newRow.mkString(","), true)
@@ -46,10 +46,10 @@ object DBFileUtils {
         val splitted = column.split(" ").reverse
         Column(columnName = splitted.tail.reverse.mkString(" "), columnType = Type.toType(splitted.head))
       }
-    )
+    ).toList
     val rows = lines.tail.map(
       line =>
-        Row(line.split(","))
+        Row(line.split(",").toList)
     )
 
     val key = readFile(keyPath(path, tableName)).head
@@ -60,9 +60,9 @@ object DBFileUtils {
   def readDB(databaseName: String): Database =
     Database(
       FileUtils
-        .listFiles(new File(s"$dbLocation/$databaseName/"), Seq(tableExtension.drop(1)).toArray[String], false)
+        .listFiles(new File(s"$dbLocation/$databaseName/"), List(tableExtension.drop(1)).toArray[String], false)
         .asScala.map(fileName => readTable(s"$databaseName/", fileName.getName.dropRight(tableExtension.length)).get)
-        .toSeq,
+        .toList,
       databaseName
     )
 

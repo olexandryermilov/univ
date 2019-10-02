@@ -5,7 +5,7 @@ import utils.Parameters
 
 object Main {
   def main(args: Array[String]): Unit = {
-    val databaseManager = new DatabaseManager
+    val databaseManager = new DatabaseManager()
     val outputManager = new OutputManager
     CreateTableCommand.run(
       Map[String, Any](
@@ -25,7 +25,7 @@ object Main {
         Parameters.tableName -> "table",
         Parameters.databaseName -> "db",
         Parameters.columnsAndValues ->
-          Seq[(Column, String)](
+          List[(Column, String)](
             Column(Type.Integer, "column1") -> "15",
             Column(Type.Integer, "column2") -> "32"
           )
@@ -38,7 +38,7 @@ object Main {
         Parameters.tableName -> "table",
         Parameters.databaseName -> "db",
         Parameters.columnsAndValues ->
-          Seq[(Column, String)](
+          List[(Column, String)](
             Column(Type.Integer, "column1") -> "15",
             Column(Type.Integer, "column2") -> "33"
           )
@@ -51,7 +51,7 @@ object Main {
         Parameters.tableName -> "table",
         Parameters.databaseName -> "db",
         Parameters.columnsAndValues ->
-          Seq[(Column, String)](
+          List[(Column, String)](
             Column(Type.Integer, "column1") -> "15444",
             Column(Type.Integer, "column2") -> "32"
           )
@@ -64,7 +64,7 @@ object Main {
         Parameters.tableName -> "table",
         Parameters.databaseName -> "db",
         Parameters.columnsAndValues ->
-          Seq[(Column, String)](
+          List[(Column, String)](
             Column(Type.Integer, "column1") -> "1reg",
             Column(Type.Integer, "column2") -> "32"
           )
@@ -86,7 +86,7 @@ object Main {
         Parameters.tableName -> "table",
         Parameters.databaseName -> "db",
         Parameters.columnsAndValues ->
-          Seq[(Column, String)](
+          List[(Column, String)](
             Column(Type.Integer, "column1") -> "154",
             Column(Type.Integer, "column2") -> "32"
           )
@@ -128,7 +128,7 @@ object Main {
         Parameters.tableName -> "table2",
         Parameters.databaseName -> "db",
         Parameters.columnsAndValues ->
-          Seq[(Column, String)](
+          List[(Column, String)](
             Column(Type.Integer, "column3") -> "1",
             Column(Type.Integer, "column2") -> "32"
           )
@@ -141,7 +141,7 @@ object Main {
         Parameters.tableName -> "table",
         Parameters.databaseName -> "db",
         Parameters.columnsAndValues ->
-          Seq[(Column, String)](
+          List[(Column, String)](
             Column(Type.Integer, "column1") -> "100",
             Column(Type.Integer, "column2") -> "323"
           )
@@ -154,7 +154,7 @@ object Main {
         Parameters.tableName -> "table2",
         Parameters.databaseName -> "db",
         Parameters.columnsAndValues ->
-          Seq[(Column, String)](
+          List[(Column, String)](
             Column(Type.Integer, "column3") -> "100",
             Column(Type.Integer, "column2") -> "3"
           )
@@ -172,13 +172,13 @@ object Main {
       databaseManager,
       outputManager
     )
-    /*DropTableCommand.run(
+    DropTableCommand.run(
       Map[String, Any](
         Parameters.tableName -> "table",
         Parameters.databaseName -> "db"
       ),
       databaseManager,
       outputManager
-    )*/
+    )
   }
 }

@@ -15,7 +15,7 @@ object ScalaFileUtils {
     FileUtils.writeStringToFile(new File(filePath), text, StandardCharsets.UTF_8.name(), append)
   }
 
-  def readFile(filePath: String): Seq[String] = FileUtils.readLines(new File(filePath), StandardCharsets.UTF_8.name()).asScala
+  def readFile(filePath: String): List[String] = FileUtils.readLines(new File(filePath), StandardCharsets.UTF_8.name()).asScala.toList
 
   def deleteFile(filePath: String, tableName: String, extension: String): Unit = {
     val fileToDelete = new File(filePath)

@@ -16,7 +16,7 @@ object Type extends Enumeration {
     case "Integer" => Integer
     case "Real" => Real
     case "Char" => Char
-    case "String " => String
+    case "String" => String
     case "CharInv" => CharInv
   }
 }

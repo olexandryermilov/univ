@@ -5,36 +5,37 @@ import utils.DBFileUtils
 
 import scala.util.Try
 
-class DatabaseManager(valueValidator: ValueValidator = new ValueValidator) {
-  def createTable(tableName: String, columns: Seq[Column], key: String, databaseName: String): Table = {
-    val table = Table(Seq.empty, tableName, columns.sortWith((a, b) => a.columnName.compareTo(b.columnName) < 0), key)
-    DBFileUtils.saveTableTo(s"$databaseName/", table).getOrElse(println("Something went wrong"))
+class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
+                      dbFileUtils: DBFileUtils = new DBFileUtils) {
+  def createTable(tableName: String, columns: List[Column], key: String, databaseName: String): Table = {
+    val table = Table(List.empty, tableName, columns.sortWith((a, b) => a.columnName.compareTo(b.columnName) < 0), key)
+    dbFileUtils.saveTableTo(s"$databaseName/", table).getOrElse(println("Something went wrong"))
     table
   }
 
-  def addRowToTable(columnsWithValues: Seq[(Column, String)], tableName: String, databaseName: String): Try[Row] = {
+  def addRowToTable(columnsWithValues: List[(Column, String)], tableName: String, databaseName: String): Try[Row] = {
     valueValidator.validateValues(columnsWithValues) map { _ =>
       val sortedValues = columnsWithValues.sortWith(
         (a, b) => a._1.columnName.compareTo(b._1.columnName) < 0
       ).map(_._2)
-      DBFileUtils.addRow(s"$databaseName/", tableName, sortedValues)
+      dbFileUtils.addRow(s"$databaseName/", tableName, sortedValues)
       Row(sortedValues)
     }
   }
 
   def dropTable(tableName: String, databaseName: String): Boolean = {
-    DBFileUtils.deleteTable(s"$databaseName/", tableName).map(_ => true).getOrElse(false)
+    dbFileUtils.deleteTable(s"$databaseName/", tableName).map(_ => true).getOrElse(false)
   }
 
   def findTable(tableName: String, databaseName: String): Table = {
-    DBFileUtils.readTable(s"$databaseName/", tableName).get
+    dbFileUtils.readTable(s"$databaseName/", tableName).get
   }
 
   def removeRow(value: String, tableName: String, databaseName: String): Try[Unit] = {
-    DBFileUtils.removeRow(s"$databaseName/", tableName, value)
+    dbFileUtils.removeRow(s"$databaseName/", tableName, value)
   }
 
-  def editRow(columnsAndValues: Seq[(Column, String)], tableName: String, databaseName: String): Try[Row] = {
+  def editRow(columnsAndValues: List[(Column, String)], tableName: String, databaseName: String): Try[Row] = {
     val table = findTable(tableName, databaseName)
     val keyValue = columnsAndValues.find(cV => cV._1.columnName == table.key).getOrElse(throw new ShouldUseKeyColumnException)._2
     val keyIndex = table.columns.map(_.columnName).indexOf(table.key)
@@ -47,14 +48,14 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator) {
   }
 
   def viewAllTables(databaseName: String): Database = {
-    DBFileUtils.readDB(databaseName)
+    dbFileUtils.readDB(databaseName)
   }
 
   def mergeTables(tableName1: String, tableName2: String, databaseName: String, joinOn: String): Try[Table] = {
     val firstTable = findTable(tableName1, databaseName)
     val secondTable = findTable(tableName2, databaseName)
     val newColumns = mergeColumns(firstTable.columns, secondTable.columns)
-    val newRows: Seq[Row] = mergeRows(
+    val newRows: List[Row] = mergeRows(
       firstTable.rows.map(_.values.zip(firstTable.columns)),
       secondTable.rows.map(_.values.zip(secondTable.columns)),
       newColumns, joinOn
@@ -65,17 +66,17 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator) {
       newColumns,
       joinOn
     )
-    DBFileUtils.saveTableTo(s"$databaseName/", newTable).map(_ => newTable)
+    dbFileUtils.saveTableTo(s"$databaseName/", newTable).map(_ => newTable)
   }
 
-  private def mergeColumns(firstTableColumns: Seq[Column], secondTableColumns: Seq[Column]): Seq[Column] = {
-    (firstTableColumns.toSet ++ secondTableColumns.toSet).toSeq
+  private def mergeColumns(firstTableColumns: List[Column], secondTableColumns: List[Column]): List[Column] = {
+    (firstTableColumns.toSet ++ secondTableColumns.toSet).toList.sortWith((a, b) => a.columnName.compareTo(b.columnName) < 0)
   }
 
-  private def mergeRows(firstTableRowsWithColumns: Seq[Seq[(String, Column)]],
-                        secondTableRowsWithColumns: Seq[Seq[(String, Column)]],
-                        newColumn: Seq[Column], joinOn: String): Seq[Seq[String]] = {
-    val newValues: Seq[Seq[String]] = for {
+  private def mergeRows(firstTableRowsWithColumns: List[List[(String, Column)]],
+                        secondTableRowsWithColumns: List[List[(String, Column)]],
+                        newColumn: List[Column], joinOn: String): List[List[String]] = {
+    val newValues: List[List[String]] = for {
       firstTableRow <- firstTableRowsWithColumns
       rowKey = firstTableRow.find(_._2.columnName == joinOn).get._1
     } yield
