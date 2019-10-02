@@ -17,7 +17,7 @@ class OutputManager {
 
   def databaseFound(database: Database): Unit = println(s"Database found $database")
 
-  def mergeTables(tableName1: String, tableName2: String): Unit = println(s"Tables merged")
+  def mergeTables(tableName1: String, tableName2: String, table: Table): Unit = println(s"Tables merged into $table")
 
   def failure(e: Throwable): Unit = println(e.getMessage)
 

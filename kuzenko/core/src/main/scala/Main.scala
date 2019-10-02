@@ -1,4 +1,4 @@
-import commands.{AddRowCommand, CreateTableCommand, DropTableCommand, EditRowCommand, FindTableCommand, RemoveRowCommand, ViewDatabaseCommand}
+import commands.{AddRowCommand, CreateTableCommand, DropTableCommand, EditRowCommand, FindTableCommand, MergeTablesCommand, RemoveRowCommand, ViewDatabaseCommand}
 import domain.{Column, Type}
 import manager.{DatabaseManager, OutputManager}
 import utils.Parameters
@@ -7,7 +7,7 @@ object Main {
   def main(args: Array[String]): Unit = {
     val databaseManager = new DatabaseManager
     val outputManager = new OutputManager
-    val command = CreateTableCommand.run(
+    CreateTableCommand.run(
       Map[String, Any](
         Parameters.tableName -> "table",
         Parameters.databaseName -> "db",
@@ -109,13 +109,76 @@ object Main {
       databaseManager,
       outputManager
     )
-    DropTableCommand.run(
+
+    CreateTableCommand.run(
+      Map[String, Any](
+        Parameters.tableName -> "table2",
+        Parameters.databaseName -> "db",
+        Parameters.columns -> List(
+          Column(Type.Integer, "column3"),
+          Column(Type.Integer, "column2")
+        ),
+        Parameters.key -> "column2"
+      ),
+      databaseManager,
+      outputManager
+    )
+    AddRowCommand.run(
+      Map[String, Any](
+        Parameters.tableName -> "table2",
+        Parameters.databaseName -> "db",
+        Parameters.columnsAndValues ->
+          Seq[(Column, String)](
+            Column(Type.Integer, "column3") -> "1",
+            Column(Type.Integer, "column2") -> "32"
+          )
+      ),
+      databaseManager,
+      outputManager
+    )
+    AddRowCommand.run(
+      Map[String, Any](
+        Parameters.tableName -> "table",
+        Parameters.databaseName -> "db",
+        Parameters.columnsAndValues ->
+          Seq[(Column, String)](
+            Column(Type.Integer, "column1") -> "100",
+            Column(Type.Integer, "column2") -> "323"
+          )
+      ),
+      databaseManager,
+      outputManager
+    )
+    AddRowCommand.run(
+      Map[String, Any](
+        Parameters.tableName -> "table2",
+        Parameters.databaseName -> "db",
+        Parameters.columnsAndValues ->
+          Seq[(Column, String)](
+            Column(Type.Integer, "column3") -> "100",
+            Column(Type.Integer, "column2") -> "3"
+          )
+      ),
+      databaseManager,
+      outputManager
+    )
+    MergeTablesCommand.run(
+      Map[String, Any](
+        Parameters.firstTableName -> "table",
+        Parameters.secondTableName -> "table2",
+        Parameters.databaseName -> "db",
+        Parameters.joinOn -> "column2"
+      ),
+      databaseManager,
+      outputManager
+    )
+    /*DropTableCommand.run(
       Map[String, Any](
         Parameters.tableName -> "table",
         Parameters.databaseName -> "db"
       ),
       databaseManager,
       outputManager
-    )
+    )*/
   }
 }

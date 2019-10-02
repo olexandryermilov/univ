@@ -10,4 +10,7 @@ object Parameters {
   final val tableExtension = ".table"
   final val keyExtension = ".key"
   final val row = "row"
+  final val joinOn = "joinOn"
+  final val firstTableName = "firstTableName"
+  final val secondTableName = "secondTableName"
 }

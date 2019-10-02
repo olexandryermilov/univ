@@ -50,7 +50,47 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator) {
     DBFileUtils.readDB(databaseName)
   }
 
-  def mergeTables(tableName1: String, tableName2: String) = ???
+  def mergeTables(tableName1: String, tableName2: String, databaseName: String, joinOn: String): Try[Table] = {
+    val firstTable = findTable(tableName1, databaseName)
+    val secondTable = findTable(tableName2, databaseName)
+    val newColumns = mergeColumns(firstTable.columns, secondTable.columns)
+    val newRows: Seq[Row] = mergeRows(
+      firstTable.rows.map(_.values.zip(firstTable.columns)),
+      secondTable.rows.map(_.values.zip(secondTable.columns)),
+      newColumns, joinOn
+    ).map(Row)
+    val newTable = Table(
+      newRows,
+      s"${firstTable.name}_merge_${secondTable.name}",
+      newColumns,
+      joinOn
+    )
+    DBFileUtils.saveTableTo(s"$databaseName/", newTable).map(_ => newTable)
+  }
+
+  private def mergeColumns(firstTableColumns: Seq[Column], secondTableColumns: Seq[Column]): Seq[Column] = {
+    (firstTableColumns.toSet ++ secondTableColumns.toSet).toSeq
+  }
+
+  private def mergeRows(firstTableRowsWithColumns: Seq[Seq[(String, Column)]],
+                        secondTableRowsWithColumns: Seq[Seq[(String, Column)]],
+                        newColumn: Seq[Column], joinOn: String): Seq[Seq[String]] = {
+    val newValues: Seq[Seq[String]] = for {
+      firstTableRow <- firstTableRowsWithColumns
+      rowKey = firstTableRow.find(_._2.columnName == joinOn).get._1
+    } yield
+      secondTableRowsWithColumns.find(row => row.exists(r => r._2.columnName == joinOn && r._1 == rowKey)) match {
+        case Some(r) => newColumn.map(col => firstTableRow
+          .find(_._2.columnName == col.columnName)
+          .map(_._1)
+          .getOrElse(r.find(_._2.columnName == col.columnName).map(_._1).getOrElse(""))
+        )
+
+        case None => newColumn.map(col => firstTableRow.find(_._2.columnName == col.columnName).map(_._1).getOrElse(""))
+      }
+    newValues
+  }
+
 }
 
 case class ShouldUseKeyColumnException() extends RuntimeException("Should have use key column when doing request")
