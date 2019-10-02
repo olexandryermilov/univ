@@ -10,6 +10,6 @@ object EditRowCommand extends Command {
     val tableName: String = parameters.getOrElse(Parameters.tableName, "").asInstanceOf[String]
     val databaseName: String = parameters.getOrElse(Parameters.databaseName, "").asInstanceOf[String]
     val row = databaseManager.editRow(columnsAndValues, tableName, databaseName)
-    outputManager.rowEdited(tableName, row)
+    outputManager.rowEdited(tableName, row.get)
   }
 }

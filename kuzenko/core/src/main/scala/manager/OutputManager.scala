@@ -7,7 +7,7 @@ class OutputManager {
 
   def rowAdded(name: String, row: Row): Unit = println(s"Added $row to $name")
 
-  def rowEdited(name: String, row: Row): Unit = ???
+  def rowEdited(name: String, row: Row): Unit = println(s"Edited row $row in $name")
 
   def tableDropped(name: String): Unit = println(s"Table $name dropped.")
 

@@ -12,12 +12,12 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator) {
     table
   }
 
-  def addRowToTable(columnsWithValues: Seq[(Column, String)], name: String, databaseName: String): Try[Row] = {
+  def addRowToTable(columnsWithValues: Seq[(Column, String)], tableName: String, databaseName: String): Try[Row] = {
     valueValidator.validateValues(columnsWithValues) map { _ =>
       val sortedValues = columnsWithValues.sortWith(
         (a, b) => a._1.columnName.compareTo(b._1.columnName) < 0
       ).map(_._2)
-      DBFileUtils.addRow(s"$databaseName/", name, sortedValues)
+      DBFileUtils.addRow(s"$databaseName/", tableName, sortedValues)
       Row(sortedValues)
     }
   }
@@ -34,7 +34,17 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator) {
     DBFileUtils.removeRow(s"$databaseName/", tableName, value)
   }
 
-  def editRow(columnsAndValues: Seq[(Column, String)], tableName: String, databaseName: String): Row = ???
+  def editRow(columnsAndValues: Seq[(Column, String)], tableName: String, databaseName: String): Try[Row] = {
+    val table = findTable(tableName, databaseName)
+    val keyValue = columnsAndValues.find(cV => cV._1.columnName == table.key).getOrElse(throw new ShouldUseKeyColumnException)._2
+    val keyIndex = table.columns.map(_.columnName).indexOf(table.key)
+    val oldRow = table.columns.zip(table.rows.map(_.values).find(row => row(keyIndex) == keyValue).get)
+    val allColumnsWithValue = table.columns.map(column =>
+      column -> columnsAndValues.find(x => x._1 == column).map(_._2).getOrElse(oldRow.find(x => x._1 == column).map(_._2).getOrElse(""))
+    )
+    removeRow(keyValue, tableName, databaseName)
+    addRowToTable(allColumnsWithValue, tableName, databaseName)
+  }
 
   def viewAllTables(databaseName: String): Database = {
     DBFileUtils.readDB(databaseName)
@@ -42,3 +52,5 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator) {
 
   def mergeTables(tableName1: String, tableName2: String) = ???
 }
+
+case class ShouldUseKeyColumnException() extends RuntimeException("Should have use key column when doing request")
