@@ -1,6 +1,8 @@
 plugins {
     id 'java'
     id 'scala'
+    id 'org.springframework.boot' version '2.1.9.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 }
 
 group 'com.yermilov.univ'
@@ -16,6 +18,8 @@ dependencies {
     //testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation 'org.scala-lang:scala-library:2.11.12'
     implementation 'com.fasterxml.jackson.module:jackson-module-scala_2.12:2.10.0.pr3'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     // https://mvnrepository.com/artifact/commons-io/commons-io
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
     testCompile 'junit:junit:4.5'
@@ -23,4 +27,5 @@ dependencies {
     testCompile 'org.specs2:specs2-junit_2.11:3.6.5-20151112214348-18646b2'
     testCompile 'org.specs2:specs2-matcher-extra_2.11:3.6.5-20151112214348-18646b2'
     testCompile group: 'org.mockito', name: 'mockito-scala_2.11', version: '1.5.18'
+    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-scala_2.11', version: '2.9.8'
 }

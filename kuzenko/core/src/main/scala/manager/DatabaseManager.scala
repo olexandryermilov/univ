@@ -5,6 +5,7 @@ import utils.DBFileUtils
 
 import scala.util.Try
 
+
 class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
                       dbFileUtils: DBFileUtils = new DBFileUtils) {
   def createTable(tableName: String, columns: List[Column], key: String, databaseName: String): Table = {
@@ -27,8 +28,8 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
     dbFileUtils.deleteTable(s"$databaseName/", tableName).map(_ => true).getOrElse(false)
   }
 
-  def findTable(tableName: String, databaseName: String): Table = {
-    dbFileUtils.readTable(s"$databaseName/", tableName).get
+  def findTable(tableName: String, databaseName: String): Try[Table] = {
+    dbFileUtils.readTable(s"$databaseName/", tableName)
   }
 
   def removeRow(value: String, tableName: String, databaseName: String): Try[Unit] = {
@@ -36,7 +37,7 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
   }
 
   def editRow(columnsAndValues: List[(Column, String)], tableName: String, databaseName: String): Try[Row] = {
-    val table = findTable(tableName, databaseName)
+    val table = findTable(tableName, databaseName).get
     val keyValue = columnsAndValues.find(cV => cV._1.columnName == table.key).getOrElse(throw new ShouldUseKeyColumnException)._2
     val keyIndex = table.columns.map(_.columnName).indexOf(table.key)
     val oldRow = table.columns.zip(table.rows.map(_.values).find(row => row(keyIndex) == keyValue).get)
@@ -52,8 +53,8 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
   }
 
   def mergeTables(tableName1: String, tableName2: String, databaseName: String, joinOn: String): Try[Table] = {
-    val firstTable = findTable(tableName1, databaseName)
-    val secondTable = findTable(tableName2, databaseName)
+    val firstTable = findTable(tableName1, databaseName).get
+    val secondTable = findTable(tableName2, databaseName).get
     val newColumns = mergeColumns(firstTable.columns, secondTable.columns)
     val newRows: List[Row] = mergeRows(
       firstTable.rows.map(_.values.zip(firstTable.columns)),
@@ -67,6 +68,10 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
       joinOn
     )
     dbFileUtils.saveTableTo(s"$databaseName/", newTable).map(_ => newTable)
+  }
+
+  def createDatabase(databaseName: String): Database = {
+    dbFileUtils.createDB(databaseName).get
   }
 
   private def mergeColumns(firstTableColumns: List[Column], secondTableColumns: List[Column]): List[Column] = {

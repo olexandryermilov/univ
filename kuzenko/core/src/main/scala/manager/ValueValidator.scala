@@ -38,13 +38,13 @@ case class StringValidator() extends Validator {
 
 case class IntegerValidator() extends Validator {
   override def validate(value: String): Try[Unit] = Try {
-    val res = value.toInt
+    val res = BigInt(value)
   }.orElse(throw WrongType(Integer.toString, value))
 }
 
 case class RealValidator() extends Validator {
   override def validate(value: String): Try[Unit] = Try {
-    val res = value.toDouble
+    val res = BigDecimal(value)
   }.orElse(throw WrongType(Real.toString, value))
 }
 

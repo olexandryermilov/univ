@@ -66,6 +66,11 @@ class DBFileUtils {
       databaseName
     )
 
+  def createDB(databaseName: String): Try[Database] = {
+    FileUtils.touch(new File(s"$dbLocation/$databaseName/"))
+    Database(List.empty, databaseName)
+  }
+
   def removeRow(path: String, tableName: String, value: String): Try[Unit] = Try {
     val table = readTable(path, tableName).get
     val keyIndex = table.columns.map(_.columnName).indexOf(table.key)

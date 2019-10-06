@@ -46,10 +46,9 @@ class DatabaseManagerTest extends ctx  {
 
     val result = databaseManager.mergeTables(tableName, anotherTableName, databaseName, "name").get
 
-
     assert(result == mergedTable)
   }
-  /*def mergeTable(): Unit = {
+  def mergeTable(): Unit = {
 
     when(dbFileUtils.readTable(s"$databaseName/", tableName)).thenReturn(
       Try(table.copy(rows = List(generateRowForFirstTable, generateRowForFirstTable, generateRowForFirstTable)))
@@ -71,11 +70,11 @@ class DatabaseManagerTest extends ctx  {
     )
 
     verify(dbFileUtils).saveTableTo(s"$databaseName", mergedTable)
-  }*/
+  }
 
 }
 
-trait ctx {//extends org.mockito.MockitoSugar {
+trait ctx {
   val key = "keyColumn"
   val tableName = "TABLE"
   val columns = List(
