@@ -2,4 +2,6 @@ package domain
 
 import domain.Type.Type
 
-case class Column(columnType: Type, columnName: String)
+import scala.beans.BeanProperty
+
+case class Column(@BeanProperty columnType: Type, @BeanProperty columnName: String)
