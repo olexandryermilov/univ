@@ -36,9 +36,9 @@ class RestController(databaseManager: DatabaseManager, outputManager: OutputMana
 
 
   @RequestMapping(value = Array("/{databaseName}/table/{tableName}/row"), method = Array(RequestMethod.POST))
-  @ResponseBody def insertRow(@RequestBody columnsWithValues: List[JavaColumnWithValue], @PathVariable databaseName: String, @PathVariable tableName: String): Row =
+  @ResponseBody def insertRow(@RequestBody columnsWithValues: java.util.List[JavaColumnWithValue], @PathVariable databaseName: String, @PathVariable tableName: String): Row =
     databaseManager.addRowToTable(
-      columnsWithValues.map(columnWithValue => (Column(Type.toType(columnWithValue.columnType), columnWithValue.columnName)) -> columnWithValue.value),
+      columnsWithValues.asScala.toList.map(columnWithValue => (Column(Type.toType(columnWithValue.columnType), columnWithValue.columnName)) -> columnWithValue.value),
       tableName,
       databaseName).get
 
@@ -48,9 +48,9 @@ class RestController(databaseManager: DatabaseManager, outputManager: OutputMana
     databaseManager.removeRow(keyValue, tableName, databaseName).get
 
   @RequestMapping(value = Array("/{databaseName}/table/{tableName}/row/{keyValue}"), method = Array(RequestMethod.POST))
-  @ResponseBody def editRow(@RequestBody columnsWithValues: List[JavaColumnWithValue], @PathVariable keyValue: String, @PathVariable databaseName: String, @PathVariable tableName: String): Unit =
+  @ResponseBody def editRow(@RequestBody columnsWithValues: java.util.List[JavaColumnWithValue], @PathVariable keyValue: String, @PathVariable databaseName: String, @PathVariable tableName: String): Unit =
     databaseManager.editRow(
-      columnsWithValues.map(columnWithValue => (Column(Type.toType(columnWithValue.columnType), columnWithValue.columnName) -> columnWithValue.value)), tableName, databaseName)
+      columnsWithValues.asScala.toList.map(columnWithValue => (Column(Type.toType(columnWithValue.columnType), columnWithValue.columnName) -> columnWithValue.value)), tableName, databaseName)
 
   @RequestMapping(value = Array("/{databaseName}/table/{tableName}"), method = Array(RequestMethod.DELETE))
   @ResponseBody def deleteTable(@PathVariable databaseName: String, @PathVariable tableName: String): Unit = databaseManager.dropTable(tableName, databaseName)
@@ -75,7 +75,6 @@ case class JavaColumnWithValue(@BeanProperty columnName: String, @BeanProperty c
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 case class CreateTableRequest(@BeanProperty var tableName: String, @BeanProperty var key: String, @BeanProperty var columns: java.util.List[JavaColumn]) {
-
   def this() = this(null, null, null)
 }
 

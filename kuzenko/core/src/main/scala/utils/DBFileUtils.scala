@@ -66,7 +66,7 @@ class DBFileUtils {
       databaseName
     )
 
-  def createDB(databaseName: String): Try[Database] = {
+  def createDB(databaseName: String): Try[Database] = Try {
     FileUtils.touch(new File(s"$dbLocation/$databaseName/"))
     Database(List.empty, databaseName)
   }
