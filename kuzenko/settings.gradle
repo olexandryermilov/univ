@@ -1,4 +1,4 @@
-include ':android'
-include("core")
+//include ':android'
+include 'core'
 include 'graphql'
 

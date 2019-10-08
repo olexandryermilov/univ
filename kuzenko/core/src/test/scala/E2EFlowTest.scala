@@ -1,8 +1,8 @@
-import commands.{AddRowCommand, CreateTableCommand, DropTableCommand, EditRowCommand, FindTableCommand, MergeTablesCommand, RemoveRowCommand, ViewDatabaseCommand}
-import domain.{Column, Row, Table, Type}
-import manager.{DatabaseManager, OutputManager}
+import com.yermilov.commands.{AddRowCommand, CreateTableCommand, DropTableCommand, EditRowCommand, FindTableCommand, MergeTablesCommand, RemoveRowCommand, ViewDatabaseCommand}
+import com.yermilov.domain.{Column, Row, Table, Type}
+import com.yermilov.manager.{DatabaseManager, OutputManager}
 import org.junit.Test
-import utils.{DBFileUtils, Parameters, ScalaFileUtils}
+import com.yermilov.utils.{DBFileUtils, Parameters, ScalaFileUtils}
 import Parameters._
 
 class E2EFlowTest {

@@ -1,7 +1,7 @@
-import commands.{AddRowCommand, CreateTableCommand, DropTableCommand, EditRowCommand, FindTableCommand, MergeTablesCommand, RemoveRowCommand, ViewDatabaseCommand}
-import domain.{Column, Type}
-import manager.{DatabaseManager, OutputManager}
-import utils.Parameters
+import com.yermilov.commands.{AddRowCommand, CreateTableCommand, DropTableCommand, EditRowCommand, FindTableCommand, MergeTablesCommand, RemoveRowCommand, ViewDatabaseCommand}
+import com.yermilov.domain.{Column, Type}
+import com.yermilov.manager.{DatabaseManager, OutputManager}
+import com.yermilov.utils.Parameters
 
 object Main {
   def main(args: Array[String]): Unit = {
