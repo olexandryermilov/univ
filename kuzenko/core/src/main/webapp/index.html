@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/reset.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/style.css')}}">
+    <script src="{{url_for('static', filename='scripts/jquery.min.js')}}"></script>
+</head>
+<body>
+<div class="container">
+    <div id="databases-nav" class="nav">
+        <div class="first">Databases:</div>
+        <div class="last">Create</div>
+    </div>
+    <div id="tables-nav" class="nav">
+        <div class="first">Tables:</div>
+        <div class="last">Create</div>
+    </div>
+    <div id="table-container">
+        <div id="message">Please select database</div>
+        <table class="db-table" id="db-table"></table>
+    </div>
+</div>
+<script src="{{url_for('static', filename='scripts/main.js')}}"></script>
+</body>
+</html>
