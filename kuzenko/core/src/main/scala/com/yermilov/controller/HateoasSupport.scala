@@ -114,3 +114,9 @@ trait HateoasSupport {
   }
 
 }
+
+case class HateoasJavaRow(@BeanProperty val content: JavaRow) extends ResourceSupport
+
+case class HateoasJavaTable(@BeanProperty val content: JavaTable) extends ResourceSupport
+
+case class HateoasJavaDatabase(@BeanProperty val content: JavaDatabase) extends ResourceSupport

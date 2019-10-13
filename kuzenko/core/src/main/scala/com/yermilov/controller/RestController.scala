@@ -3,7 +3,6 @@ package com.yermilov.controller
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.yermilov.domain._
 import com.yermilov.manager.{DatabaseManager, OutputManager}
-import org.springframework.hateoas.ResourceSupport
 import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, ResponseBody}
 
 import scala.beans.BeanProperty
@@ -81,12 +80,6 @@ case class JavaColumn(@BeanProperty columnName: String, @BeanProperty columnType
 case class JavaColumnWithValue(@BeanProperty columnName: String, @BeanProperty columnType: String, @BeanProperty value: String) {
   def this() = this("", "", "")
 }
-
-case class HateoasJavaRow(@BeanProperty val content: JavaRow) extends ResourceSupport
-
-case class HateoasJavaTable(@BeanProperty val content: JavaTable) extends ResourceSupport
-
-case class HateoasJavaDatabase(@BeanProperty val content: JavaDatabase) extends ResourceSupport
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 case class CreateTableRequest(@BeanProperty var tableName: String, @BeanProperty var key: String, @BeanProperty var columns: java.util.List[JavaColumn]) {
