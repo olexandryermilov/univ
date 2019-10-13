@@ -63,6 +63,11 @@ class RestController(databaseManager: DatabaseManager, outputManager: OutputMana
   @ResponseBody def mergeTables(@RequestParam joinOn: String, @PathVariable databaseName: String, @PathVariable firstTableName: String, @PathVariable secondTableName: String): Table =
     databaseManager.mergeTables(firstTableName, secondTableName, databaseName, joinOn).get
 
+  @RequestMapping(value = Array("/"), method = Array(RequestMethod.GET))
+  @ResponseBody def getAllDatabases: List[JavaDatabase] =
+    databaseManager.getAllDatabases.map(_.toJava)
+
+
   @RequestMapping(value = Array("/hateoas/{databaseName}/table"), method = Array(RequestMethod.POST))
   @ResponseBody def hateoasCreateTable(@RequestBody request: CreateTableRequest, @PathVariable databaseName: String): HttpEntity[HateoasJavaTable] = {
     val javaTable = HateoasJavaTable(databaseManager.createTable(request.tableName, request.columns.asScala.map(_.toScala).toList, request.key, databaseName).toJava)

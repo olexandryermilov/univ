@@ -25,9 +25,6 @@ class MainApplication {
 
   @Bean
   def restController: RestController = new RestController(databaseManager, outputManager)
-
-  /*@Bean
-  def hateoasController: RestHATEOASController = new RestHATEOASController(databaseManager, outputManager)*/
 }
 
 @Configuration

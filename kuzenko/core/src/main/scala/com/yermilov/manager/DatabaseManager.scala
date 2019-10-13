@@ -24,17 +24,14 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
     }
   }
 
-  def dropTable(tableName: String, databaseName: String): Boolean = {
+  def dropTable(tableName: String, databaseName: String): Boolean =
     dbFileUtils.deleteTable(s"$databaseName/", tableName).map(_ => true).getOrElse(false)
-  }
 
-  def findTable(tableName: String, databaseName: String): Try[Table] = {
+  def findTable(tableName: String, databaseName: String): Try[Table] =
     dbFileUtils.readTable(s"$databaseName/", tableName)
-  }
 
-  def removeRow(value: String, tableName: String, databaseName: String): Try[Unit] = {
+  def removeRow(value: String, tableName: String, databaseName: String): Try[Unit] =
     dbFileUtils.removeRow(s"$databaseName/", tableName, value)
-  }
 
   def editRow(columnsAndValues: List[(Column, String)], tableName: String, databaseName: String): Try[Row] = {
     val table = findTable(tableName, databaseName).get
@@ -48,9 +45,8 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
     addRowToTable(allColumnsWithValue, tableName, databaseName)
   }
 
-  def viewAllTables(databaseName: String): Database = {
+  def viewAllTables(databaseName: String): Database =
     dbFileUtils.readDB(databaseName)
-  }
 
   def mergeTables(tableName1: String, tableName2: String, databaseName: String, joinOn: String): Try[Table] = {
     val firstTable = findTable(tableName1, databaseName).get
@@ -70,13 +66,16 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
     dbFileUtils.saveTableTo(s"$databaseName/", newTable).map(_ => newTable)
   }
 
-  def createDatabase(databaseName: String): Database = {
+  def createDatabase(databaseName: String): Database =
     dbFileUtils.createDB(databaseName).get
-  }
 
-  private def mergeColumns(firstTableColumns: List[Column], secondTableColumns: List[Column]): List[Column] = {
+
+  def getAllDatabases: List[Database] =
+    dbFileUtils.readAllDBs
+
+
+  private def mergeColumns(firstTableColumns: List[Column], secondTableColumns: List[Column]): List[Column] =
     (firstTableColumns.toSet ++ secondTableColumns.toSet).toList.sortWith((a, b) => a.columnName.compareTo(b.columnName) < 0)
-  }
 
   private def mergeRows(firstTableRowsWithColumns: List[List[(String, Column)]],
                         secondTableRowsWithColumns: List[List[(String, Column)]],

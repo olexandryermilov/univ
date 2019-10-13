@@ -1,9 +1,12 @@
 package com.yermilov.utils
 
 import java.io.File
+import java.util
 
 import com.yermilov.domain.{Column, Database, Row, Table, Type}
+import com.yermilov.utils.Parameters.dbLocation
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.filefilter.DirectoryFileFilter
 
 import collection.JavaConverters._
 import scala.util.Try
@@ -66,8 +69,11 @@ class DBFileUtils {
       databaseName
     )
 
+  def readAllDBs: List[Database] = new File(s"$dbLocation").list().filterNot(_.contains("."))
+    .map(readDB).toList
+
   def createDB(databaseName: String): Try[Database] = Try {
-    FileUtils.touch(new File(s"$dbLocation/$databaseName/"))
+    FileUtils.touch(new File(s"$dbLocation$databaseName/"))
     Database(List.empty, databaseName)
   }
 
@@ -81,4 +87,13 @@ class DBFileUtils {
   private def tablePath(path: String, tableName: String): String = s"$dbLocation$path$tableName$tableExtension"
 
   private def keyPath(path: String, tableName: String): String = s"$dbLocation$path$tableName$keyExtension"
+}
+
+object DBFileUtils {
+
+  import collection.JavaConverters._
+
+  def main(args: Array[String]): Unit = {
+
+  }
 }
