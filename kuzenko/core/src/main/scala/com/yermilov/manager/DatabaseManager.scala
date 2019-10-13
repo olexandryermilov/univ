@@ -69,6 +69,8 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
   def createDatabase(databaseName: String): Database =
     dbFileUtils.createDB(databaseName).get
 
+  def deleteDatabase(databaseName: String): Unit =
+    dbFileUtils.deleteDB(databaseName)
 
   def getAllDatabases: List[Database] =
     dbFileUtils.readAllDBs
@@ -98,4 +100,4 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
 
 }
 
-case class ShouldUseKeyColumnException() extends RuntimeException("Should have use key column when doing request")
+case class ShouldUseKeyColumnException() extends RuntimeException("Should have used key column when doing request")

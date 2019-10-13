@@ -32,8 +32,8 @@ class RestController(override val databaseManager: DatabaseManager, outputManage
 
   @CrossOrigin(origins = Array("http://localhost:63342"))
   @RequestMapping(value = Array("/"), method = Array(RequestMethod.POST))
-  @ResponseBody def createDatabase(@RequestBody databaseName: String): JavaDatabase =
-    databaseManager.createDatabase(databaseName).toJava
+  @ResponseBody def createDatabase(@RequestBody createDatabaseRequest: CreateDatabaseRequest): JavaDatabase =
+    databaseManager.createDatabase(createDatabaseRequest.databaseName).toJava
 
   @CrossOrigin(origins = Array("http://localhost:63342"))
   @RequestMapping(value = Array("/{databaseName}/table/{tableName}/row"), method = Array(RequestMethod.POST))
@@ -67,6 +67,12 @@ class RestController(override val databaseManager: DatabaseManager, outputManage
   @RequestMapping(value = Array("/"), method = Array(RequestMethod.GET))
   @ResponseBody def getAllDatabases: List[JavaDatabase] =
     databaseManager.getAllDatabases.map(_.toJava)
+
+  @CrossOrigin(origins = Array("http://localhost:63342"))
+  @RequestMapping(value = Array("/{databaseName}"), method = Array(RequestMethod.DELETE))
+  @ResponseBody def deleteDB(@PathVariable databaseName: String): Unit =
+    databaseManager.deleteDatabase(databaseName)
+
 }
 
 case class JavaRow(@BeanProperty values: java.util.List[String])
@@ -79,6 +85,11 @@ case class JavaColumn(@BeanProperty columnName: String, @BeanProperty columnType
 
 case class JavaColumnWithValue(@BeanProperty columnName: String, @BeanProperty columnType: String, @BeanProperty value: String) {
   def this() = this("", "", "")
+}
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+case class CreateDatabaseRequest(@BeanProperty var databaseName: String) {
+  def this() = this(null)
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)

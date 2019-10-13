@@ -1,14 +1,11 @@
 package com.yermilov.utils
 
 import java.io.File
-import java.util
 
-import com.yermilov.domain.{Column, Database, Row, Table, Type}
-import com.yermilov.utils.Parameters.dbLocation
+import com.yermilov.domain._
 import org.apache.commons.io.FileUtils
-import org.apache.commons.io.filefilter.DirectoryFileFilter
 
-import collection.JavaConverters._
+import scala.collection.JavaConverters._
 import scala.util.Try
 
 class DBFileUtils {
@@ -73,7 +70,7 @@ class DBFileUtils {
     .map(readDB).toList
 
   def createDB(databaseName: String): Try[Database] = Try {
-    FileUtils.touch(new File(s"$dbLocation$databaseName/"))
+    FileUtils.forceMkdir(new File(s"$dbLocation$databaseName/"))
     Database(List.empty, databaseName)
   }
 
@@ -84,16 +81,11 @@ class DBFileUtils {
     if (newTable != table) saveTableTo(path, newTable)
   }
 
+  def deleteDB(databaseName: String): Try[Unit] = Try {
+    FileUtils.deleteDirectory(new File(s"$dbLocation/$databaseName/"))//, new File(s"./deleted/$databaseName/"))
+  }
+
   private def tablePath(path: String, tableName: String): String = s"$dbLocation$path$tableName$tableExtension"
 
   private def keyPath(path: String, tableName: String): String = s"$dbLocation$path$tableName$keyExtension"
-}
-
-object DBFileUtils {
-
-  import collection.JavaConverters._
-
-  def main(args: Array[String]): Unit = {
-
-  }
 }

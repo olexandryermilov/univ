@@ -7,6 +7,7 @@ import com.yermilov.manager.{DatabaseManager, OutputManager}
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.{Bean, Configuration}
+import org.springframework.web.servlet.config.annotation.{CorsRegistry, WebMvcConfigurer, WebMvcConfigurerAdapter}
 
 object MainApplication {
   def main(args: Array[String]): Unit = {
@@ -25,6 +26,15 @@ class MainApplication {
 
   @Bean
   def restController: RestController = new RestController(databaseManager, outputManager)
+
+  @Bean
+  def corsConfigurer(): WebMvcConfigurer = {
+    new WebMvcConfigurer() {
+      override def addCorsMappings(registry: CorsRegistry) {
+        registry.addMapping("/**").allowedOrigins("http://localhost:63342").allowedMethods("GET", "POST", "PUT", "DELETE");
+      }
+    }
+  }
 }
 
 @Configuration
