@@ -12,17 +12,18 @@
 <div class="container">
     <div id="databases-nav" class="nav">
         <div class="first">Databases:</div>
-        <div class="last">Create</div>
+        <div class="last" id="createDB">Create</div>
+        <div class="last" id="deleteDB">Delete</div>
     </div>
     <div id="tables-nav" class="nav">
         <div class="first">Tables:</div>
-        <div class="last">Create</div>
     </div>
     <div id="table-container">
-        <div id="message">Please select database</div>
         <table class="db-table" id="db-table"></table>
     </div>
+    <div id="tables-to-merge-nav" class="nav">
+    </div>
 </div>
-<script src="{{url_for('static', filename='scripts/main.js')}}"></script>
+<script src="./static/scripts/main.js"></script>
 </body>
 </html>
