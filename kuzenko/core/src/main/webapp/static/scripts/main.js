@@ -31,6 +31,7 @@ function getDatabase(databaseName) {
         TABLES_NAV.append('<div class="last" id="createTable" onclick="prepareCreatingTable()">Create</div>');
         TABLES_NAV.append('<div class="last" id="deleteTable" onclick="deleteTable()">Delete</div>');
         TABLES_NAV.append('<div class="last" id="deleteTable" onclick="prepareMergeTables()">Merge</div>');
+        DB_TABLE.html('');
     });
 }
 
@@ -67,7 +68,7 @@ function getTable(tableName, databaseName) {
         }
         row = $('<tr></tr>');
         for (let i = 0; i < TABLE.columns.length; i++) {
-            row.append($('<td><input type ="text" id = "column_(' + wrapValue(COLUMNS[i].columnName) + ')"></td>'));
+            row.append($('<td><input type ="text" id = "column_' + COLUMNS[i].columnName + '"></td>'));
         }
         row.append($('<td onclick="addRow()">+</td>'));
         DB_TABLE.append(row);
@@ -117,6 +118,8 @@ function createDatabase() {
         console.log(data);
         console.log(status);
         getAllDatabases();
+        DB_TABLE.html('');
+        TABLES_NAV.html('');
     });
 }
 
@@ -129,6 +132,9 @@ function deleteDatabase() {
     }).then(function (data, status, jqxhr) {
         CURRENT_DB = undefined;
         console.log(status);
+        TABLES_NAV.html('');
+        DB_TABLE.html('');
+        getAllDatabases();
     });
     getAllDatabases();
 }
@@ -223,9 +229,31 @@ function redrawColumnsForCreateTable(tableName) {
 }
 
 function addRow() {
+    let newColumnsWithValues = [];
     for (var i = 0; i < TABLE.columns.length; i++) {
-
+        var columnValue = document.getElementById("column_"+COLUMNS[i].columnName).value;
+        console.log("column_"+COLUMNS[i].columnName);
+        console.log(columnValue);
+        newColumnsWithValues.push({
+           "columnName": COLUMNS[i].columnName,
+           "columnType": COLUMNS[i].columnType,
+           "value": columnValue
+        });
     }
+    console.log(JSON.stringify(newColumnsWithValues));
+    $.ajax({
+        url: "http://localhost:8080/database/" + CURRENT_DB.databaseName + "/table/" + TABLE.tableName + "/row/",
+        type: 'POST',
+        data: JSON.stringify(newColumnsWithValues),
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            alert("Status: " + textStatus);
+        }
+    }).then(function (data) {
+        getTable(TABLE.tableName, CURRENT_DB.databaseName);
+        DB_TABLE.html('');
+    });
 }
 
 function prepareMergeTables() {

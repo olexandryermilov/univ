@@ -66,8 +66,13 @@ class DBFileUtils {
       databaseName
     )
 
-  def readAllDBs: List[Database] = new File(s"$dbLocation").list().filterNot(_.contains("."))
-    .map(readDB).toList
+  def readAllDBs: List[Database] = {
+    println(new File(s"$dbLocation").list().filterNot(_.contains(".")).mkString("" +
+      "\n"))
+    Thread.sleep(100)
+    new File(s"$dbLocation").list().filterNot(_.contains("."))
+      .map(readDB).toList
+  }
 
   def createDB(databaseName: String): Try[Database] = Try {
     FileUtils.forceMkdir(new File(s"$dbLocation$databaseName/"))
