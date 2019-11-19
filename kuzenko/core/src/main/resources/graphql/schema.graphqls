@@ -1,0 +1,31 @@
+schema {
+    query: Query
+}
+
+type Query {
+    database(databaseName: String): Database
+    table(databaseName: String, tableName: String): Table
+    row(databaseName: String, tableName: String, keyValue: String): Row
+    mergeTables(databaseName: String, firstTableName: String, secondTableName: String, mergeOn: String): Table
+}
+
+type Database {
+    databaseName: String!
+    tables: [Table]!
+}
+
+type Table {
+    name: String!
+    rows: [Row!]
+    columns: [Column!]
+    key: String!
+}
+
+type Row {
+    values: [String!]!
+}
+
+type Column {
+    columnType: String!
+    columnName: String!
+}

@@ -1,5 +1,6 @@
 package com.yermilov.manager
 
+import com.yermilov.controller.JavaDatabase
 import com.yermilov.domain.{Column, Database, Row, Table}
 import com.yermilov.utils.DBFileUtils
 
@@ -8,6 +9,7 @@ import scala.util.Try
 
 class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
                       dbFileUtils: DBFileUtils = new DBFileUtils) {
+  import com.yermilov.utils.Mappers._
   def createTable(tableName: String, columns: List[Column], key: String, databaseName: String): Table = {
     val table = Table(List.empty, tableName, columns.sortWith((a, b) => a.columnName.compareTo(b.columnName) < 0), key)
     dbFileUtils.saveTableTo(s"$databaseName/", table).getOrElse(println("Something went wrong"))
@@ -47,6 +49,9 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
 
   def viewAllTables(databaseName: String): Database =
     dbFileUtils.readDB(databaseName)
+
+  def viewAllTablesJava(databaseName: String): JavaDatabase =
+    viewAllTables(databaseName).toJava
 
   def mergeTables(tableName1: String, tableName2: String, databaseName: String, joinOn: String): Try[Table] = {
     val firstTable = findTable(tableName1, databaseName).get

@@ -12,7 +12,9 @@ sourceCompatibility = 1.8
 
 sourceSets.main.scala.srcDir "src/main/java"
 sourceSets.main.java.srcDirs = []
-
+compileJava.classpath += files(compileScala.destinationDir)
+//compileScala.exclude('compileJava')
+//compileJava.dependsOn(compileScala)
 repositories {
     mavenCentral()
 }
@@ -32,4 +34,11 @@ dependencies {
     testCompile 'org.specs2:specs2-matcher-extra_2.11:3.6.5-20151112214348-18646b2'
     testCompile group: 'org.mockito', name: 'mockito-scala_2.11', version: '1.5.18'
     compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-scala_2.11', version: '2.9.8'
+    implementation 'com.graphql-java:graphql-java:11.0'
+    compile group: 'com.graphql-java', name: 'graphql-spring-boot-starter', version: '5.0.2'
+    implementation 'com.graphql-java:graphql-java-tools:5.2.4'
+    implementation 'com.graphql-java:graphiql-spring-boot-starter:5.0.2'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.1.4.RELEASE'
+    runtimeOnly 'com.h2database:h2:1.4.199'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 }

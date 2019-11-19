@@ -3,6 +3,7 @@ package com.yermilov.application
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.yermilov.controller.RestController
+import com.yermilov.graphql.{DatabaseQuery, DatabaseService}
 import com.yermilov.manager.{DatabaseManager, OutputManager}
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -25,16 +26,24 @@ class MainApplication {
   def outputManager: OutputManager = new OutputManager()
 
   @Bean
-  def restController: RestController = new RestController(databaseManager, outputManager)
+  def databaseService(databaseManager: DatabaseManager): DatabaseService = new DatabaseService(databaseManager)
 
   @Bean
+  def databaseQuery(databaseService: DatabaseService): DatabaseQuery = new DatabaseQuery(databaseService)
+
+ @Bean
+  def restController: RestController = new RestController(databaseManager, outputManager)
+
+  /*@Bean
   def corsConfigurer(): WebMvcConfigurer = {
     new WebMvcConfigurer() {
       override def addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**").allowedOrigins("http://localhost:63342").allowedMethods("GET", "POST", "PUT", "DELETE");
       }
     }
-  }
+  }*/
+
+   */
 }
 
 @Configuration

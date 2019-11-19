@@ -11,7 +11,7 @@ import scala.beans.BeanProperty
 
 trait HateoasSupport {
   def databaseManager: DatabaseManager
-  import Mappers._
+  import com.yermilov.utils.Mappers._
   @RequestMapping(value = Array("/hateoas/{databaseName}/table"), method = Array(RequestMethod.POST))
   @ResponseBody def hateoasCreateTable(@RequestBody request: CreateTableRequest, @PathVariable databaseName: String): HttpEntity[HateoasJavaTable] = {
     val javaTable = HateoasJavaTable(databaseManager.createTable(request.tableName, request.columns.asScala.map(_.toScala).toList, request.key, databaseName).toJava)
@@ -104,7 +104,7 @@ trait HateoasSupport {
   @RequestMapping(value = Array("/hateoas/{databaseName}/table/{firstTableName}/merge/{secondTableName}"), method = Array(RequestMethod.GET))
   @ResponseBody def hateoasMergeTables(@RequestParam joinOn: String, @PathVariable databaseName: String, @PathVariable firstTableName: String, @PathVariable secondTableName: String): HttpEntity[HateoasJavaTable] = {
     val javaTable = HateoasJavaTable(databaseManager.mergeTables(firstTableName, secondTableName, databaseName, joinOn).get.toJava)
-    val tableName = javaTable.content.tableName
+    val tableName = javaTable.content.getName
     javaTable.add(linkTo(methodOn(classOf[HateoasSupport]).hateoasFindTable(tableName, databaseName)).withSelfRel())
     javaTable.add(linkTo(methodOn(classOf[HateoasSupport]).hateoasInsertRow(null, databaseName, tableName)).withSelfRel())
     javaTable.add(linkTo(methodOn(classOf[HateoasSupport]).hateoasDeleteRow(null, databaseName, tableName)).withSelfRel())
