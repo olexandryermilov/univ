@@ -6,10 +6,37 @@ import com.yermilov.utils.DBFileUtils
 
 import scala.util.Try
 
+trait DatabaseManager {
+  def createTable(tableName: String, columns: List[Column], key: String, databaseName: String): Table
 
-class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
-                      dbFileUtils: DBFileUtils = new DBFileUtils) {
+  def addRowToTable(columnsWithValues: List[(Column, String)], tableName: String, databaseName: String): Try[Row]
+
+  def dropTable(tableName: String, databaseName: String): Boolean
+
+  def findTable(tableName: String, databaseName: String): Try[Table]
+
+  def removeRow(value: String, tableName: String, databaseName: String, key: String): Try[Unit]
+
+  def editRow(columnsAndValues: List[(Column, String)], tableName: String, databaseName: String): Try[Row]
+
+  def viewAllTables(databaseName: String): Database
+
+  def viewAllTablesJava(databaseName: String): JavaDatabase
+
+  def mergeTables(tableName1: String, tableName2: String, databaseName: String, joinOn: String): Try[Table]
+
+  def createDatabase(databaseName: String): Database
+
+  def getAllDatabases: List[Database]
+
+  def deleteDatabase(databaseName: String): Unit
+}
+
+class FileSystemDatabaseManager(valueValidator: ValueValidator = new ValueValidator,
+                                dbFileUtils: DBFileUtils = new DBFileUtils) extends DatabaseManager {
+
   import com.yermilov.utils.Mappers._
+
   def createTable(tableName: String, columns: List[Column], key: String, databaseName: String): Table = {
     val table = Table(List.empty, tableName, columns.sortWith((a, b) => a.columnName.compareTo(b.columnName) < 0), key)
     dbFileUtils.saveTableTo(s"$databaseName/", table).getOrElse(println("Something went wrong"))
@@ -32,7 +59,7 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
   def findTable(tableName: String, databaseName: String): Try[Table] =
     dbFileUtils.readTable(s"$databaseName/", tableName)
 
-  def removeRow(value: String, tableName: String, databaseName: String): Try[Unit] =
+  def removeRow(value: String, tableName: String, databaseName: String, key: String): Try[Unit] =
     dbFileUtils.removeRow(s"$databaseName/", tableName, value)
 
   def editRow(columnsAndValues: List[(Column, String)], tableName: String, databaseName: String): Try[Row] = {
@@ -43,7 +70,7 @@ class DatabaseManager(valueValidator: ValueValidator = new ValueValidator,
     val allColumnsWithValue = table.columns.map(column =>
       column -> columnsAndValues.find(x => x._1 == column).map(_._2).getOrElse(oldRow.find(x => x._1 == column).map(_._2).getOrElse(""))
     )
-    removeRow(keyValue, tableName, databaseName)
+    removeRow(keyValue, tableName, databaseName, table.key)
     addRowToTable(allColumnsWithValue, tableName, databaseName)
   }
 

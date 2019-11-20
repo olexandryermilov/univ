@@ -4,10 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.yermilov.controller.RestController
 import com.yermilov.graphql.{DatabaseQuery, DatabaseService}
-import com.yermilov.manager.{DatabaseManager, OutputManager}
+import com.yermilov.manager.{DatabaseManager, OutputManager, RelationalDatabaseManager}
+import com.yermilov.repository.DatabaseRepository
+import javax.sql.DataSource
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.{Bean, Configuration}
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.web.servlet.config.annotation.{CorsRegistry, WebMvcConfigurer, WebMvcConfigurerAdapter}
 
 object MainApplication {
@@ -20,7 +24,17 @@ object MainApplication {
 class MainApplication {
 
   @Bean
-  def databaseManager: DatabaseManager = new DatabaseManager()
+  def databaseRepository(): DatabaseRepository = {
+    val dataSourceBuilder = DataSourceBuilder.create()
+    dataSourceBuilder.driverClassName("org.h2.Driver")
+    dataSourceBuilder.url("jdbc:h2:mem:testdb")
+    dataSourceBuilder.username("SA")
+    dataSourceBuilder.password("password")
+    new DatabaseRepository(new JdbcTemplate(dataSourceBuilder.build().asInstanceOf[DataSource]))
+  }
+
+  @Bean
+  def databaseManager(databaseRepository: DatabaseRepository): DatabaseManager = new RelationalDatabaseManager(databaseRepository)
 
   @Bean
   def outputManager: OutputManager = new OutputManager()
@@ -32,7 +46,7 @@ class MainApplication {
   def databaseQuery(databaseService: DatabaseService): DatabaseQuery = new DatabaseQuery(databaseService)
 
  @Bean
-  def restController: RestController = new RestController(databaseManager, outputManager)
+  def restController(databaseManager: DatabaseManager, outputManager: OutputManager): RestController = new RestController(databaseManager, outputManager)
 
   /*@Bean
   def corsConfigurer(): WebMvcConfigurer = {

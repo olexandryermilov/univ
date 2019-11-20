@@ -75,7 +75,7 @@ trait HateoasSupport {
 
   @RequestMapping(value = Array("/hateoas/{databaseName}/table/{tableName}/row/{keyValue}"), method = Array(RequestMethod.DELETE))
   @ResponseBody def hateoasDeleteRow(@PathVariable keyValue: String, @PathVariable databaseName: String, @PathVariable tableName: String): HttpEntity[HateoasDeleteResponse] = {
-    val response = HateoasDeleteResponse(databaseManager.removeRow(keyValue, tableName, databaseName).isSuccess)
+    val response = HateoasDeleteResponse(databaseManager.removeRow(keyValue, tableName, databaseName, "key").isSuccess)
     response.add(linkTo(methodOn(classOf[HateoasSupport]).hateoasFindTable(tableName, databaseName)).withSelfRel())
     response.add(linkTo(methodOn(classOf[HateoasSupport]).hateoasInsertRow(null, databaseName, tableName)).withSelfRel())
     new ResponseEntity[HateoasDeleteResponse](response, HttpStatus.OK)

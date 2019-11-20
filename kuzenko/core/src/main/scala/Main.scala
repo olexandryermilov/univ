@@ -1,11 +1,11 @@
 import com.yermilov.commands.{AddRowCommand, CreateTableCommand, DropTableCommand, EditRowCommand, FindTableCommand, MergeTablesCommand, RemoveRowCommand, ViewDatabaseCommand}
 import com.yermilov.domain.{Column, Type}
-import com.yermilov.manager.{DatabaseManager, OutputManager}
+import com.yermilov.manager.{DatabaseManager, FileSystemDatabaseManager, OutputManager}
 import com.yermilov.utils.Parameters
 
 object Main {
   def main(args: Array[String]): Unit = {
-    val databaseManager = new DatabaseManager()
+    /*val databaseManager = new FileSystemDatabaseManager()
     val outputManager = new OutputManager
     CreateTableCommand.run(
       Map[String, Any](
@@ -180,5 +180,6 @@ object Main {
       databaseManager,
       outputManager
     )
+  }*/
   }
 }

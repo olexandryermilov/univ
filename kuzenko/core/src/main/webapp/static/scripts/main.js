@@ -24,8 +24,8 @@ function getDatabase(databaseName) {
         TABLES_NAV.html('<div class="first">Tables:</div>');
         for (let i = 0; i < TABLES.length; i++) {
             console.log(TABLES[i]);
-            var tableName = TABLES[i].tableName;
-            TABLES_NAV.append('<div onclick="getTable(' + wrapValue(tableName) + ', ' + wrapValue(databaseName) + ')">' + TABLES[i].tableName + '</div>');
+            var tableName = TABLES[i].name;
+            TABLES_NAV.append('<div onclick="getTable(' + wrapValue(tableName) + ', ' + wrapValue(databaseName) + ')">' + tableName + '</div>');
         }
         TABLES_NAV.append('<div><input type = "text" id="table_input"/></div>');
         TABLES_NAV.append('<div class="last" id="createTable" onclick="prepareCreatingTable()">Create</div>');
@@ -96,15 +96,21 @@ function getAllDatabases() {
 }
 
 function deleteRow(keyValue, databaseName) {
+    console.log(TABLE.key)
     $.ajax({
-        url: "http://localhost:8080/database/" + databaseName + "/table/" + TABLE.tableName + "/row/" + keyValue,
-        type: 'DELETE'
+        url: "http://localhost:8080/database/" + databaseName + "/table/" + TABLE.name + "/row/" + keyValue,
+        type: 'DELETE',
+        data: JSON.stringify({"key": TABLE.key}),
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json'
     }).then(function (data, status, jqxhr) {
         console.log(data);
         console.log(status);
         console.log(jqxhr);
-        getTable(TABLE.tableName, databaseName)
-    })
+        getTable(TABLE.name, databaseName);
+        getTable(TABLE.name, databaseName);
+    });
+    getTable(TABLE.name, databaseName);
 }
 
 function createDatabase() {
@@ -141,12 +147,12 @@ function deleteDatabase() {
 
 function deleteTable() {
     $.ajax({
-        url: "http://localhost:8080/database/" + CURRENT_DB.databaseName + "/table/" + TABLE.tableName,
+        url: "http://localhost:8080/database/" + CURRENT_DB.databaseName + "/table/" + TABLE.name,
         type: 'DELETE',
         contentType: "application/json; charset=utf-8",
         dataType: 'json'
     }).then(function (data, status, jqxhr) {
-        console.log(TABLE.tableName);
+        console.log(TABLE.name);
         TABLE = undefined;
         console.log(status);
         getDatabase(CURRENT_DB.databaseName);
@@ -242,7 +248,7 @@ function addRow() {
     }
     console.log(JSON.stringify(newColumnsWithValues));
     $.ajax({
-        url: "http://localhost:8080/database/" + CURRENT_DB.databaseName + "/table/" + TABLE.tableName + "/row/",
+        url: "http://localhost:8080/database/" + CURRENT_DB.databaseName + "/table/" + TABLE.name + "/row/",
         type: 'POST',
         data: JSON.stringify(newColumnsWithValues),
         contentType: "application/json; charset=utf-8",
@@ -251,7 +257,7 @@ function addRow() {
             alert("Status: " + textStatus);
         }
     }).then(function (data) {
-        getTable(TABLE.tableName, CURRENT_DB.databaseName);
+        getTable(TABLE.name, CURRENT_DB.databaseName);
         DB_TABLE.html('');
     });
 }
@@ -259,10 +265,10 @@ function addRow() {
 function prepareMergeTables() {
     TABLES_TO_MERGE_NAV.html('<div class="first">Tables:</div>');
     for (let i = 0; i < TABLES.length; i++) {
-        if (TABLES[i].tableName !== TABLE.tableName) {
+        if (TABLES[i].name !== TABLE.name) {
             console.log(TABLES[i]);
             var table = TABLES[i];
-            TABLES_TO_MERGE_NAV.append('<div onclick="mergeTablesStage2(' + i + ')">' + table.tableName + '</div>');
+            TABLES_TO_MERGE_NAV.append('<div onclick="mergeTablesStage2(' + i + ')">' + table.name + '</div>');
         }
     }
 
@@ -288,12 +294,12 @@ function mergeTablesStage2(secondTableIndex) {
     }
     select = select + '</select></form>';
     TABLES_TO_MERGE_NAV.append($('<td>' + select + '</td>'));
-    TABLES_TO_MERGE_NAV.append('<div class="last" id="deleteTable" onclick="finallyMergeTables('+wrapValue(secondTable.tableName)+')">Merge</div>');
+    TABLES_TO_MERGE_NAV.append('<div class="last" id="deleteTable" onclick="finallyMergeTables('+wrapValue(secondTable.name)+')">Merge</div>');
 }
 
 function finallyMergeTables(secondTableName){
     $.ajax({
-        url: "http://localhost:8080/database/" + CURRENT_DB.databaseName + "/table/" + TABLE.tableName + "/merge/" + secondTableName,
+        url: "http://localhost:8080/database/" + CURRENT_DB.databaseName + "/table/" + TABLE.name + "/merge/" + secondTableName,
         type: 'GET',
         data: {
             "joinOn": joinOn.value

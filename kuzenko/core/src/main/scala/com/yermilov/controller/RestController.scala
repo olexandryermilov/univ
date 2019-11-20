@@ -45,8 +45,10 @@ class RestController(override val databaseManager: DatabaseManager, outputManage
 
   @CrossOrigin(origins = Array("http://localhost:63342", "http://localhost:3000"))
   @RequestMapping(value = Array("/database/{databaseName}/table/{tableName}/row/{keyValue}"), method = Array(RequestMethod.DELETE))
-  @ResponseBody def deleteRow(@PathVariable keyValue: String, @PathVariable databaseName: String, @PathVariable tableName: String): Unit =
-    databaseManager.removeRow(keyValue, tableName, databaseName).get
+  @ResponseBody def deleteRow(@PathVariable keyValue: String, @PathVariable databaseName: String, @PathVariable tableName: String, @RequestBody key: DeleteRowRequest): Unit = {
+    println(key.key)
+    databaseManager.removeRow(keyValue, tableName, databaseName, key.key).get
+  }
 
   @CrossOrigin(origins = Array("http://localhost:63342", "http://localhost:3000"))
   @RequestMapping(value = Array("/database/{databaseName}/table/{tableName}/row/{keyValue}"), method = Array(RequestMethod.POST))
@@ -84,6 +86,11 @@ case class JavaColumn(@BeanProperty columnName: String, @BeanProperty columnType
 
 case class JavaColumnWithValue(@BeanProperty columnName: String, @BeanProperty columnType: String, @BeanProperty value: String) {
   def this() = this("", "", "")
+}
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+case class DeleteRowRequest(@BeanProperty var key: String) {
+  def this() = this(null)
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
