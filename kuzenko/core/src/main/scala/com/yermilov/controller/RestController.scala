@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.{RestController => SpringRestCont
 import scala.util.{Success, Try}
 
 @SpringRestController
+@CrossOrigin(origins = Array("*"), allowedHeaders = Array("*"))
 class RestController(override val databaseManager: DatabaseManager, outputManager: OutputManager) extends HateoasSupport {
 
   import com.yermilov.utils.Mappers._
@@ -60,7 +61,7 @@ class RestController(override val databaseManager: DatabaseManager, outputManage
   @RequestMapping(value = Array("/database/{databaseName}/table/{tableName}"), method = Array(RequestMethod.DELETE))
   @ResponseBody def deleteTable(@PathVariable databaseName: String, @PathVariable tableName: String): Try[Boolean] = Success(databaseManager.dropTable(tableName, databaseName))
 
-  @CrossOrigin(origins = Array("http://localhost:63342", "http://localhost:3000"))
+  //@CrossOrigin(origins = Array("http://localhost:63342", "http://localhost:3000"))
   @RequestMapping(value = Array("/database/{databaseName}/table/{firstTableName}/merge/{secondTableName}"), method = Array(RequestMethod.GET))
   @ResponseBody def mergeTables(@RequestParam joinOn: String, @PathVariable databaseName: String, @PathVariable firstTableName: String, @PathVariable secondTableName: String): Table =
     databaseManager.mergeTables(firstTableName, secondTableName, databaseName, joinOn).get

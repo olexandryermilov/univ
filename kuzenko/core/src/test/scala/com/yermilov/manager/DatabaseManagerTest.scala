@@ -129,5 +129,5 @@ trait ctx {
   //val valueValidator: ValueValidator = mock[ValueValidator]
   //val dbFileUtils: DBFileUtils = mock[DBFileUtils]
   //val databaseManagerWithMocks = new DatabaseManager(valueValidator, dbFileUtils)
-  val databaseManager = new DatabaseManager()
+  val databaseManager = new FileSystemDatabaseManager()
 }

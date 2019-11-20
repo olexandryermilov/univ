@@ -39,25 +39,23 @@ class MainApplication {
   @Bean
   def outputManager: OutputManager = new OutputManager()
 
-  @Bean
+  /*@Bean
   def databaseService(databaseManager: DatabaseManager): DatabaseService = new DatabaseService(databaseManager)
 
   @Bean
-  def databaseQuery(databaseService: DatabaseService): DatabaseQuery = new DatabaseQuery(databaseService)
+  def databaseQuery(databaseService: DatabaseService): DatabaseQuery = new DatabaseQuery(databaseService)*/
 
  @Bean
   def restController(databaseManager: DatabaseManager, outputManager: OutputManager): RestController = new RestController(databaseManager, outputManager)
 
-  /*@Bean
+  @Bean
   def corsConfigurer(): WebMvcConfigurer = {
     new WebMvcConfigurer() {
       override def addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("/**").allowedOrigins("http://localhost:63342").allowedMethods("GET", "POST", "PUT", "DELETE");
+        registry.addMapping("/**").allowedOrigins("http://localhost:63342", "http://localhost:3000").allowedMethods("GET", "POST", "PUT", "DELETE");
       }
     }
-  }*/
-
-   */
+  }
 }
 
 @Configuration

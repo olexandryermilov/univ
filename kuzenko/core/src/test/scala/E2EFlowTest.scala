@@ -1,6 +1,6 @@
 import com.yermilov.commands.{AddRowCommand, CreateTableCommand, DropTableCommand, EditRowCommand, FindTableCommand, MergeTablesCommand, RemoveRowCommand, ViewDatabaseCommand}
 import com.yermilov.domain.{Column, Row, Table, Type}
-import com.yermilov.manager.{DatabaseManager, OutputManager}
+import com.yermilov.manager.{DatabaseManager, FileSystemDatabaseManager, OutputManager}
 import org.junit.Test
 import com.yermilov.utils.{DBFileUtils, Parameters, ScalaFileUtils}
 import Parameters._
@@ -9,7 +9,7 @@ class E2EFlowTest {
     @Test
     def allWorksAsIntended: Unit = {
       val dbFileUtils = new DBFileUtils
-      val databaseManager = new DatabaseManager()
+      val databaseManager = new FileSystemDatabaseManager()
       val outputManager = new OutputManager
       CreateTableCommand.run(
         Map[String, Any](

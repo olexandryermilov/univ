@@ -29,7 +29,9 @@ class RelationalDatabaseManager(databaseRepository: DatabaseRepository) extends 
   override def viewAllTablesJava(databaseName: String): JavaDatabase = ???
 
   override def mergeTables(tableName1: String, tableName2: String, databaseName: String, joinOn: String): Try[Table] =
-    databaseRepository.merge(tableName1, tableName2, joinOn)
+    Try {
+      databaseRepository.merge(tableName1, tableName2, joinOn)
+    }
 
   override def createDatabase(databaseName: String): Database = ???
 
