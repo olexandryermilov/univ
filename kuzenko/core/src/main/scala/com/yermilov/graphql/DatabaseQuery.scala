@@ -1,9 +1,9 @@
 package com.yermilov.graphql
 
-import com.coxautodev.graphql.tools.GraphQLQueryResolver
+//import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import com.yermilov.controller.{JavaDatabase, JavaRow, JavaTable}
 
-class DatabaseQuery(databaseService: DatabaseService) extends GraphQLQueryResolver {
+class DatabaseQuery(databaseService: DatabaseService) /*extends GraphQLQueryResolver {
 
   import com.yermilov.utils.Mappers._
 
@@ -19,3 +19,4 @@ class DatabaseQuery(databaseService: DatabaseService) extends GraphQLQueryResolv
     databaseService.mergeTables(databaseName: String, firstTableName: String, secondTableName: String, mergeOn: String).toJava
 
 }
+*/

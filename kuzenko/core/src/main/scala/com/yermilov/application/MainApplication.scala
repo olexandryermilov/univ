@@ -59,11 +59,9 @@ class MainApplication {
   @Bean
   def outputManager: OutputManager = new OutputManager()
 
-  @Bean
-  def databaseService(databaseManager: DatabaseManager): DatabaseService = new DatabaseService(databaseManager)
+  //@Bean def databaseService(databaseManager: DatabaseManager): DatabaseService = new DatabaseService(databaseManager)
 
-  @Bean
-  def databaseQuery(databaseService: DatabaseService): DatabaseQuery = new DatabaseQuery(databaseService)
+  //@Bean def databaseQuery(databaseService: DatabaseService): DatabaseQuery = new DatabaseQuery(databaseService)
 
   @Bean
   def restController(databaseManager: DatabaseManager, outputManager: OutputManager): RestController = new RestController(databaseManager, outputManager)
