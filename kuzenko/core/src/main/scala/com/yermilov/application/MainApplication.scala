@@ -2,13 +2,16 @@ package com.yermilov.application
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import com.yermilov.controller.RestController
 import com.yermilov.graphql.{DatabaseQuery, DatabaseService}
-import com.yermilov.manager.{DatabaseManager, OutputManager, RelationalDatabaseManager}
+import com.yermilov.manager.{DatabaseManager, FileSystemDatabaseManager, OutputManager, RelationalDatabaseManager}
 import com.yermilov.repository.DatabaseRepository
 import javax.sql.DataSource
+//import org.mongodb.scala.MongoClient
 import org.springframework.boot.SpringApplication
-import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.autoconfigure.{EnableAutoConfiguration, SpringBootApplication}
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.{Bean, Configuration}
 import org.springframework.jdbc.core.JdbcTemplate
@@ -19,6 +22,8 @@ object MainApplication {
     SpringApplication.run(classOf[MainApplication], args: _ *)
   }
 }
+
+/*mongodb+srv://oleksandr:kuzenko@kuzenko-nepyp.gcp.mongodb.net/test?retryWrites=true&w=majority*/
 
 @SpringBootApplication
 class MainApplication {
@@ -33,21 +38,37 @@ class MainApplication {
     new DatabaseRepository(new JdbcTemplate(dataSourceBuilder.build().asInstanceOf[DataSource]))
   }
 
+  /*
   @Bean
   def databaseManager(databaseRepository: DatabaseRepository): DatabaseManager = new RelationalDatabaseManager(databaseRepository)
+   */
+
+  @Bean
+  def databaseManager(): DatabaseManager = new FileSystemDatabaseManager()
+
+  /*@Bean
+  def databaseManager(objectMapper: ObjectMapper): DatabaseManager = {
+    System.setProperty("org.mongodb.async.type", "netty")
+    val mongoClient: MongoClient = MongoClient("mongodb+srv://oleksandr:kuzenko@kuzenko-nepyp.gcp.mongodb.net/test?retryWrites=true&w=majority")
+    new MongoDatabaseManager(
+      jsonMapper = objectMapper,
+      mongoClient = mongoClient
+    )
+  }*/
 
   @Bean
   def outputManager: OutputManager = new OutputManager()
 
-  /*@Bean
+  @Bean
   def databaseService(databaseManager: DatabaseManager): DatabaseService = new DatabaseService(databaseManager)
 
   @Bean
-  def databaseQuery(databaseService: DatabaseService): DatabaseQuery = new DatabaseQuery(databaseService)*/
+  def databaseQuery(databaseService: DatabaseService): DatabaseQuery = new DatabaseQuery(databaseService)
 
- @Bean
+  @Bean
   def restController(databaseManager: DatabaseManager, outputManager: OutputManager): RestController = new RestController(databaseManager, outputManager)
 
+  /*
   @Bean
   def corsConfigurer(): WebMvcConfigurer = {
     new WebMvcConfigurer() {
@@ -56,6 +77,8 @@ class MainApplication {
       }
     }
   }
+  */
+   */
 }
 
 @Configuration
@@ -63,7 +86,7 @@ class JacksonConfiguration {
 
   @Bean
   def objectMapper: ObjectMapper = {
-    val objectMapper = new ObjectMapper()
+    val objectMapper = new ObjectMapper() //with ScalaObjectMapper
     objectMapper.registerModule(DefaultScalaModule)
     objectMapper
   }

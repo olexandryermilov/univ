@@ -29,9 +29,6 @@ dependencies {
     // https://mvnrepository.com/artifact/commons-io/commons-io
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
     testCompile 'junit:junit:4.5'
-    testCompile 'org.specs2:specs2-core_2.11:3.6.5-20151112214348-18646b2'
-    testCompile 'org.specs2:specs2-junit_2.11:3.6.5-20151112214348-18646b2'
-    testCompile 'org.specs2:specs2-matcher-extra_2.11:3.6.5-20151112214348-18646b2'
     testCompile group: 'org.mockito', name: 'mockito-scala_2.11', version: '1.5.18'
     compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-scala_2.11', version: '2.9.8'
     implementation 'com.graphql-java:graphql-java:11.0'

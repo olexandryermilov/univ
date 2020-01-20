@@ -1,4 +1,4 @@
-/*buildscript {
+buildscript {
     repositories {
         google()
         jcenter()
@@ -16,7 +16,7 @@ allprojects {
     }
 }
 
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.com.yermilov.application'
 
 android {
     compileSdkVersion 29
@@ -47,4 +47,3 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
 }
- */
