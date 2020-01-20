@@ -1,0 +1,4 @@
+ID Integer,INCOME Integer,NAME String
+1,1000,ALEX
+2,,NO
+312,,231
