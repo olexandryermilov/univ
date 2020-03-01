@@ -1,10 +1,11 @@
 import java.util.regex.Pattern
 
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 import scala.io.Source
 import scala.util.Random
 
-object ElizaScala {
-
+object Eliza {
 
   case class PhraseMatcher(regex: String, responses: Seq[String]) {
     def randomResponse(): String = responses(Random.nextInt(responses.size))
@@ -45,11 +46,11 @@ object ElizaScala {
 
   var phrases: Seq[PhraseMatcher] = Seq(
     PhraseMatcher("i need (.*)", Seq("Why do you need {0}?", "Would it really help you to get {0}?", "Are you sure you need {0}?")),
-    PhraseMatcher("why don'?t you ([^\\?]*)\\??", Seq("Do you really think I don't {0}?", "Perhaps eventually I will {0}.", "Do you really want me to {0}?")),
-    PhraseMatcher("why can'?t I ([^\\?]*)\\??", Seq("Do you think you should be able to {0}?", "If you could {0}, what would you do?", "I don't know -- why can't you {0}?", "Have you really tried?")),
-    PhraseMatcher("i can'?t (.*)", Seq("How do you know you can't {0}?", "Perhaps you could {0} if you tried.", "What would it take for you to {0}?")),
+    PhraseMatcher("why don't you ([^\\?]*)\\??", Seq("Do you really think I don't {0}?", "Perhaps eventually I will {0}.", "Do you really want me to {0}?")),
+    PhraseMatcher("why can't I ([^\\?]*)\\??", Seq("Do you think you should be able to {0}?", "If you could {0}, what would you do?", "I don't know -- why can't you {0}?", "Have you really tried?")),
+    PhraseMatcher("i can't (.*)", Seq("How do you know you can't {0}?", "Perhaps you could {0} if you tried.", "What would it take for you to {0}?")),
     PhraseMatcher("i am (.*)", Seq("Did you come to me because you are {0}?", "How long have you been {0}?", "How do you feel about being {0}?")),
-    PhraseMatcher("i'?m (.*)", Seq("How does being {0} make you feel?", "Do you enjoy being {0}?", "Why do you tell me you're {0}?", "Why do you think you're {0}?")),
+    PhraseMatcher("i'm (.*)", Seq("How does being {0} make you feel?", "Do you enjoy being {0}?", "Why do you tell me you're {0}?", "Why do you think you're {0}?")),
     PhraseMatcher("are you ([^\\?]*)\\??", Seq("Why does it matter whether I am {0}?", "Would you prefer it if I were not {0}?", "Perhaps you believe I am {0}.", "I may be {0} -- what do you think?")),
     PhraseMatcher("what (.*)", Seq("Why do you ask?", "How would an answer to that help you?", "What do you think?")),
     PhraseMatcher("how (.*)", Seq("How do you suppose?", "Perhaps you can answer your own question.", "What is it you're really asking?")),
@@ -64,8 +65,8 @@ object ElizaScala {
     PhraseMatcher("can you ([^\\?]*)\\??", Seq("What makes you think I can't {0}?", "If I could {0}, then what?", "Why do you ask if I can {0}?")),
     PhraseMatcher("can I ([^\\?]*)\\??", Seq("Perhaps you don't want to {0}.", "Do you want to be able to {0}?", "If you could {0}, would you?")),
     PhraseMatcher("you are (.*)", Seq("Why do you think I am {0}?", "Does it please you to think that I'm {0}?", "Perhaps you would like me to be {0}.", "Perhaps you're really talking about yourself?")),
-    PhraseMatcher("you'?re (.*)", Seq("Why do you say I am {0}?", "Why do you think I am {0}?", "Are we talking about you, or me?")),
-    PhraseMatcher("i don'?t (.*)", Seq("Don't you really {0}?", "Why don't you {0}?", "Do you want to {0}?")),
+    PhraseMatcher("you're (.*)", Seq("Why do you say I am {0}?", "Why do you think I am {0}?", "Are we talking about you, or me?")),
+    PhraseMatcher("i don't (.*)", Seq("Don't you really {0}?", "Why don't you {0}?", "Do you want to {0}?")),
     PhraseMatcher("i feel (.*)", Seq("Good, tell me more about these feelings.", "Do you often feel {0}?", "When do you usually feel {0}?", "When you feel {0}, what do you do?")),
     PhraseMatcher("i have (.*)", Seq("Why do you tell me that you've {0}?", "Have you really {0}?", "Now that you have {0}, what will you do next?")),
     PhraseMatcher("i would (.*)", Seq("Could you explain why you would {0}?", "Why would you {0}?", "Who else knows that you would {0}?")),
@@ -79,20 +80,22 @@ object ElizaScala {
     PhraseMatcher("(.*) child(.*)", Seq("Did you have close friends as a child?", "What is your favorite childhood memory?", "Do you remember any dreams or nightmares from childhood?", "Did the other children sometimes tease you?", "How do you think your childhood experiences relate to your feelings today?")),
     PhraseMatcher("(.*)\\?", Seq("Why do you ask that?", "Please consider whether you can answer your own question.", "Perhaps the answer lies within yourself?", "Why don't you tell me?")),
     PhraseMatcher("quit", Seq("Thank you for talking with me.", "Good-bye.", "Thank you, that will be $150.  Have a good day!")),
+    PhraseMatcher("sorry", Seq("Please don't apologise.", "Apologies are not necessary.", "I've told you that apologies are not required.")),
+      //should be last phrase matcher
     PhraseMatcher("(.*)", Seq("Please tell me more.", "Let's change focus a bit... Tell me about your family.", "Can you elaborate on that?", "Why do you say that, {0}?", "I see.", "Very interesting.", "{0}.", "I see.  And what does that tell you?", "How does that make you feel?", "How do you feel when you say that?")),
   )
-
 
   def prepareResponse(humansText: String): String =
     phrases.map(matcher => matcher.respond(humansText.toLowerCase)).filter(_.nonEmpty).head
 
-
   def main(args: Array[String]): Unit = {
     println("Hi! I am ELIZA - phatic dialogue bot.")
+    Await.result(new ElizaBot("BOT_TOKEN").run(), Duration.Inf)
     while (true) {
       val text = Source.stdin.bufferedReader().readLine()
       println(prepareResponse(text))
     }
+
   }
 
 }
