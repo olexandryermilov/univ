@@ -4,8 +4,6 @@ import scala.util.Random
 
 case class Day(firstPair: Seq[Lesson], secondPair: Seq[Lesson], thirdPair: Seq[Lesson]) {
 
-  lazy val random = Random
-
   def conflicts: Int = pairConflict(firstPair) + pairConflict(secondPair) + pairConflict(thirdPair)
 
   def pairConflict(pair: Seq[Lesson]): Int = {

@@ -60,7 +60,7 @@ object Schedule {
   }
 
   private def getLessonsAmount(amountOfLessons: Int): Seq[Int] = {
-    var remainingLessons = amountOfLessons
+    /*var remainingLessons = amountOfLessons
     val mondayLessons = Random.nextInt(remainingLessons / 2)
     remainingLessons = remainingLessons - mondayLessons
     val tuesdayLessons = Random.nextInt(remainingLessons / 2)
@@ -69,7 +69,7 @@ object Schedule {
     remainingLessons = remainingLessons - wednesdayLessons
     val thursdayLessons = Random.nextInt(remainingLessons / 2)
     remainingLessons = remainingLessons - thursdayLessons
-    val fridayLessons = remainingLessons
+    val fridayLessons = remainingLessons*/
     Seq(20, 20, 15, 20, amountOfLessons - 20 - 20 - 15 - 20) //Seq(mondayLessons, tuesdayLessons, wednesdayLessons, thursdayLessons, fridayLessons)
   }
 

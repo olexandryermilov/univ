@@ -10,6 +10,7 @@ package object lab4 {
   implicit class SeqExtensions[T](val seq: Seq[T]) extends AnyVal {
     def repetitions: Int = seq.groupBy(identity).toSeq.map(_._2.size - 1).sum
     def randomElement: T = seq(Random.nextInt(seq.size))
+
   }
 
   //Course id is [0; 47]

@@ -1,6 +1,6 @@
 package com.yermilov.is.lab4
 
-import scala.util.Random
+import scala.util.{Random, Try}
 
 case class Lesson(course: Course, lessonType: LessonType, group: Group, teacher: Teacher, room: Room) {
   def conflict: Int = roomConflict + teacherConflict + groupConflict
@@ -27,11 +27,13 @@ object Lesson {
   import Teacher._
   import Room._
   def randomLesson(): Lesson = {
+    val teacher = allTeachers.randomElement
+    val group = allGroups.randomElement
     Lesson(
-      allCourses.randomElement,
+      Try(teacher.possibleCourses.filter(c => group.courses.contains(c)).toSeq.randomElement).getOrElse(teacher.possibleCourses.toSeq.randomElement),
       if(Random.nextBoolean) Lecture else Practical,
-      allGroups.randomElement,
-      allTeachers.randomElement,
+      group,
+      teacher,
       allRooms.randomElement
     )
   }
