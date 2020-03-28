@@ -37,15 +37,27 @@ object Day {
   }
 
   private def getLessonsAmount(amountOfLessons: Int): Seq[Int] = {
-    var remainingLessons = amountOfLessons
-    val firstPairLessons = Random.nextInt(remainingLessons / 3)
+   /* var remainingLessons = amountOfLessons
+    val firstPairLessons = nextIntWithoutErrors(remainingLessons / 3)
     remainingLessons = remainingLessons - firstPairLessons
-    val secondPairLessons = Random.nextInt(remainingLessons / 2)
+    val secondPairLessons = nextIntWithoutErrors(remainingLessons / 2)
     remainingLessons = remainingLessons - secondPairLessons
-    val thirdPairLessons = remainingLessons
-    Seq(firstPairLessons, secondPairLessons, thirdPairLessons)
+    val thirdPairLessons = remainingLessons*/
+    Seq(amountOfLessons / 3, amountOfLessons / 3, amountOfLessons - 2 * (amountOfLessons / 3)) //Seq(firstPairLessons, secondPairLessons, thirdPairLessons)
   }
 
+  @scala.annotation.tailrec
+  private def nextIntWithoutErrors(bound: Int): Int = if (bound == 0) nextIntWithoutErrors(1) else Random.nextInt(bound)
+
   def randomPair(lessons: Int): Seq[Lesson] = (1 to lessons).map(_ => Lesson.randomLesson()).toList
+
+  def fromLessonsSeq(lessons: Seq[Lesson]): Day = {
+    val lessonsAmount = getLessonsAmount(lessons.size)
+    Day(
+      lessons.take(lessonsAmount(0)),
+      lessons.slice(lessonsAmount(0), lessonsAmount(0) + lessonsAmount(1)),
+      lessons.drop(lessonsAmount(0) + lessonsAmount(1)),
+    )
+  }
 
 }

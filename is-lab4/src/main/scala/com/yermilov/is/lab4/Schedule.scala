@@ -14,25 +14,38 @@ case class Schedule(monday: Day, tuesday: Day, wednesday: Day, thursday: Day, fr
 
   def fitnessScore: Int = allDays.map(_.conflicts).sum + conflict
 
-  def conflict: Int = ???
+  def conflict: Int = {
+    allGroupCourses.map(groupWithCourses => {
+      val group = groupWithCourses._1
+      val courses = groupWithCourses._2
+      val groupCoursesConflict = group.courses.toSeq.map(course => {
+        val practicals = courses.count(scheduledCourse => scheduledCourse._1 == course && scheduledCourse._2 == Practical)
+        val lectures = courses.count(scheduledCourse => scheduledCourse._1 == course && scheduledCourse._2 == Lecture)
+        Math.abs(practicals - 1) + Math.abs(lectures - 1)
+      }).sum
+      groupCoursesConflict
+    }).sum
+  }
 
   override def toString: String =
     s"""
-      |Monday: $monday
-      |
-      |Tuesday: $tuesday
-      |
-      |Wednesday: $wednesday
-      |
-      |Thursday: $thursday
-      |
-      |Friday: $friday
-      |""".stripMargin
+       |Monday: $monday
+       |
+       |Tuesday: $tuesday
+       |
+       |Wednesday: $wednesday
+       |
+       |Thursday: $thursday
+       |
+       |Friday: $friday
+       |""".stripMargin
 }
 
 object Schedule {
+
   import Group._
   import Day._
+
   lazy val amountOfLessons = allGroups.flatMap(_.courses).size * 2
 
   def randomSchedule(amountOfLessons: Int = amountOfLessons): Schedule = {
@@ -43,7 +56,7 @@ object Schedule {
       randomDay(lessons(2)),
       randomDay(lessons(3)),
       randomDay(lessons(4)),
-     )
+    )
   }
 
   private def getLessonsAmount(amountOfLessons: Int): Seq[Int] = {
@@ -57,6 +70,17 @@ object Schedule {
     val thursdayLessons = Random.nextInt(remainingLessons / 2)
     remainingLessons = remainingLessons - thursdayLessons
     val fridayLessons = remainingLessons
-    Seq(mondayLessons, tuesdayLessons, wednesdayLessons, thursdayLessons, fridayLessons)
+    Seq(20, 20, 15, 20, amountOfLessons - 20 - 20 - 15 - 20) //Seq(mondayLessons, tuesdayLessons, wednesdayLessons, thursdayLessons, fridayLessons)
+  }
+
+  def fromLessonsSeq(lessons: Seq[Lesson]): Schedule = {
+    val dayLessonsAmount = getLessonsAmount(lessons.size)
+    Schedule(
+      Day.fromLessonsSeq(lessons.take(dayLessonsAmount(0))),
+      Day.fromLessonsSeq(lessons.slice(dayLessonsAmount(0), dayLessonsAmount(0) + dayLessonsAmount(1))),
+      Day.fromLessonsSeq(lessons.slice(dayLessonsAmount(0) + dayLessonsAmount(1), dayLessonsAmount(0) + dayLessonsAmount(1) + dayLessonsAmount(2))),
+      Day.fromLessonsSeq(lessons.slice(dayLessonsAmount(0) + dayLessonsAmount(1) + dayLessonsAmount(2), dayLessonsAmount(0) + dayLessonsAmount(1) + dayLessonsAmount(2) + dayLessonsAmount(3))),
+      Day.fromLessonsSeq(lessons.drop(dayLessonsAmount(0) + dayLessonsAmount(1) + dayLessonsAmount(2) + dayLessonsAmount(3)))
+    )
   }
 }
