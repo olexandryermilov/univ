@@ -8,9 +8,8 @@ package object lab4 {
   implicit def booleanToInt(bool: Boolean): Int = if (bool) 1 else 0
 
   implicit class SeqExtensions[T](val seq: Seq[T]) extends AnyVal {
-    def repetitions: Int = seq.groupBy(identity).toSeq.map(_._2.size - 1).sum
+    def repetitions: Int = seq.groupBy(identity).values.filter(_.size > 1).map(_.size - 1).sum
     def randomElement: T = seq(Random.nextInt(seq.size))
-
   }
 
   //Course id is [0; 47]

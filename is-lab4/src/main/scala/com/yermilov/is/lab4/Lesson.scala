@@ -13,7 +13,7 @@ case class Lesson(course: Course, lessonType: LessonType, group: Group, teacher:
     case Practical => 0
   }
 
-  def teacherConflict: Int = !teacher.possibleCourses.contains(course)
+  def teacherConflict: Int = 0//!teacher.possibleCourses.contains(course)
 
   def groupConflict: Int = !group.courses.contains(course)
 
@@ -28,9 +28,10 @@ object Lesson {
   import Room._
   def randomLesson(): Lesson = {
     val teacher = allTeachers.randomElement
+    val teacherCourse = teacher.possibleCourses.toSeq
     val group = allGroups.randomElement
     Lesson(
-      Try(teacher.possibleCourses.filter(c => group.courses.contains(c)).toSeq.randomElement).getOrElse(teacher.possibleCourses.toSeq.randomElement),
+      Try(teacherCourse.filter(c => group.courses.contains(c)).randomElement).getOrElse(teacherCourse.randomElement),
       if(Random.nextBoolean) Lecture else Practical,
       group,
       teacher,
@@ -39,6 +40,12 @@ object Lesson {
   }
 }
 
-sealed trait LessonType
-case object Lecture extends LessonType
-case object Practical extends LessonType
+sealed trait LessonType {
+  def reverse: LessonType
+}
+case object Lecture extends LessonType {
+  override def reverse: LessonType = Practical
+}
+case object Practical extends LessonType {
+  override def reverse: LessonType = Lecture
+}

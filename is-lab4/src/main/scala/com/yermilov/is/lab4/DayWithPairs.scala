@@ -2,9 +2,7 @@ package com.yermilov.is.lab4
 
 import scala.util.Random
 
-case class Day(firstPair: Seq[Lesson], secondPair: Seq[Lesson], thirdPair: Seq[Lesson]) {
-
-  val allLessons = firstPair ++ secondPair ++ thirdPair
+case class DayWithPairs(firstPair: Seq[Lesson], secondPair: Seq[Lesson], thirdPair: Seq[Lesson]) {
 
   def conflicts: Int = pairConflict(firstPair) + pairConflict(secondPair) + pairConflict(thirdPair)
 
@@ -26,40 +24,39 @@ case class Day(firstPair: Seq[Lesson], secondPair: Seq[Lesson], thirdPair: Seq[L
 
 }
 
-object Day {
-  def randomDay(lessonsRemaining: Int): Day = {
-    //val lessonsAmount = getLessonsAmount(lessonsRemaining)
-    Day(
-      randomPair(lessonsRemaining / 3),
-      randomPair(lessonsRemaining / 3),
-      randomPair(lessonsRemaining - 2*(lessonsRemaining/3))
+object DayWithPairs {
+  def randomDayWithPairs(lessonsRemaining: Int): DayWithPairs = {
+    val lessonsAmount = getLessonsAmount(lessonsRemaining)
+    DayWithPairs(
+      randomPair(lessonsAmount(0)),
+      randomPair(lessonsAmount(1)),
+      randomPair(lessonsAmount(2)),
     )
   }
 
   private def getLessonsAmount(amountOfLessons: Int): Seq[Int] = {
-   /* var remainingLessons = amountOfLessons
-    val firstPairLessons = nextIntWithoutErrors(remainingLessons / 3)
-    remainingLessons = remainingLessons - firstPairLessons
-    val secondPairLessons = nextIntWithoutErrors(remainingLessons / 2)
-    remainingLessons = remainingLessons - secondPairLessons
-    val thirdPairLessons = remainingLessons*/
+    /* var remainingLessons = amountOfLessons
+     val firstPairLessons = nextIntWithoutErrors(remainingLessons / 3)
+     remainingLessons = remainingLessons - firstPairLessons
+     val secondPairLessons = nextIntWithoutErrors(remainingLessons / 2)
+     remainingLessons = remainingLessons - secondPairLessons
+     val thirdPairLessons = remainingLessons*/
     Seq(amountOfLessons / 3, amountOfLessons / 3, amountOfLessons - 2 * (amountOfLessons / 3)) //Seq(firstPairLessons, secondPairLessons, thirdPairLessons)
   }
 
   @scala.annotation.tailrec
-  private def nextIntWithoutErrors(bound: Int): Int = if (bound <= 0) nextIntWithoutErrors(1) else Random.nextInt(bound)
+  private def nextIntWithoutErrors(bound: Int): Int = if (bound == 0) nextIntWithoutErrors(1) else Random.nextInt(bound)
 
   def randomPair(lessons: Int): Seq[Lesson] = (1 to lessons).map(_ => Lesson.randomLesson())
 
-  def fromLessonsSeq(lessons: Seq[Lesson]): Day = {
+  def fromLessonsSeq(lessons: Seq[Lesson]): DayWithPairs = {
     val lessonsAmount = getLessonsAmount(lessons.size)
-    val lessons1 = lessons.splitAt(lessonsAmount(0))
-    val lessons2 = lessons1._2.splitAt(lessonsAmount(1))
-    Day(
-      lessons1._1,
-      lessons2._1,
-      lessons2._2,
+    DayWithPairs(
+      lessons.take(lessonsAmount(0)),
+      lessons.slice(lessonsAmount(0), lessonsAmount(0) + lessonsAmount(1)),
+      lessons.drop(lessonsAmount(0) + lessonsAmount(1)),
     )
   }
 
 }
+

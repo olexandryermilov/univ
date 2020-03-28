@@ -17,27 +17,29 @@ object MainApp {
     Room.validate()
   }
 
-  val mutationRate = 10
-  val elit = 2
-  val populationSize = 10
-  val tournamentSelection = 8
+  val mutationRate = 7
+  val elit = 3
+  val populationSize = 12
+  val tournamentSelection = 4
 
   def geneticMagic: Schedule = {
     var currentPopulation: Population = Population((1 to populationSize).map(_ => Schedule.randomSchedule()))
     var index = 0
     val startTime = System.nanoTime()
     var lastTime = System.nanoTime()
-    while (currentPopulation.population.minBy(_.fitnessScore).fitnessScore > 0) {
-
-      currentPopulation = evolve(currentPopulation)
+    while (currentPopulation.population.head.fitnessScore > 0) {
       if (index % 100 == 0) {
-        println(s"Population $index: ${currentPopulation.population.minBy(_.fitnessScore).fitnessScore}; Time took: ${(System.nanoTime() - lastTime)/1000000} ms")
+        println(s"Population $index: ${currentPopulation.population.head.fitnessScore}; Time took: ${(System.nanoTime() - lastTime) / 1000000} ms")
         lastTime = System.nanoTime()
       }
+      if(index % 10000 == 0) {
+        println(currentPopulation.population.head)
+      }
+      currentPopulation = evolve(currentPopulation)
       index = index + 1
     }
-    println((System.nanoTime() - startTime)/ 1000000)
-    currentPopulation.population.minBy(_.fitnessScore)
+    println((System.nanoTime() - startTime) / 1000000)
+    currentPopulation.population.head
   }
 
   def evolve(population: Population): Population = {
@@ -53,7 +55,10 @@ object MainApp {
     val newSchedule = Schedule.fromLessonsSeq(currScheduleLessons.zipWithIndex.map(lessonWithIndex => {
       val currLesson = lessonWithIndex._1
       val tempLesson = tempScheduleLessons(lessonWithIndex._2)
-      if (Random.nextInt(100) > mutationRate) currLesson else tempLesson
+      if (Random.nextInt(100) > mutationRate)
+        currLesson.copy(
+          room = if(Random.nextInt(100) > 50 && currLesson.lessonType == Lecture && currLesson.room.ttype != LectureRoom) Room.lectureRoom.randomElement else currLesson.room
+        ) else tempLesson
     }))
     if (newSchedule.fitnessScore < schedule.fitnessScore) newSchedule else schedule
   }
@@ -61,26 +66,53 @@ object MainApp {
   def crossoverPopulation(population: Population): Population = {
     val crossover: Population = Population(population.population.take(elit))
     val toAppend: Seq[Schedule] = (elit to populationSize).map(_ => {
-      val schedule1 = selectTournament(population)(0)
-      val schedule2 = selectTournament(population)(0)
-      crossoverSchedule(Seq(schedule1, schedule2))
+      val schedule1 = selectTournament(population)
+      val schedule2 = selectTournament(population)
+      if (Random.nextBoolean()) crossoverSchedule(schedule1, schedule2) else crossoverSchedule2(schedule1, schedule2)
     })
     Population(crossover.population ++ toAppend)
   }
 
-  def crossoverSchedule(schedules: Seq[Schedule]): Schedule = {
-    val newSchedule = Schedule(
-      monday = Seq(schedules(0).monday, schedules(1).monday).randomElement,
-      tuesday = Seq(schedules(0).tuesday, schedules(1).tuesday).randomElement,
-      wednesday = Seq(schedules(0).wednesday, schedules(1).wednesday).randomElement,
-      thursday = Seq(schedules(0).thursday, schedules(1).thursday).randomElement,
-      friday = Seq(schedules(0).friday, schedules(1).friday).randomElement,
-    )
-    (schedules ++ Seq(newSchedule)).minBy(_.fitnessScore)
+  def crossoverSchedule(firstSchedule: Schedule, secondSchedule: Schedule): Schedule = {
+    if(firstSchedule == secondSchedule) firstSchedule else {
+      val newSchedule = Schedule(
+        monday = if (Random.nextBoolean()) firstSchedule.monday else secondSchedule.monday,
+        tuesday = if (Random.nextBoolean()) firstSchedule.tuesday else secondSchedule.tuesday,
+        wednesday = if (Random.nextBoolean()) firstSchedule.wednesday else secondSchedule.wednesday,
+        thursday = if (Random.nextBoolean()) firstSchedule.thursday else secondSchedule.thursday,
+        friday = if (Random.nextBoolean()) firstSchedule.friday else secondSchedule.friday,
+      )
+      Seq(firstSchedule, newSchedule, secondSchedule).minBy(_.fitnessScore)
+    }
   }
 
-  def selectTournament(population: Population): Seq[Schedule] =
-    (1 to tournamentSelection).map(_ => population.population.randomElement).sortWith((x,y)=>x.fitnessScore < y.fitnessScore)
+  def crossoverSchedule2(firstSchedule: Schedule, secondSchedule: Schedule): Schedule = {
+    if(firstSchedule == secondSchedule) firstSchedule else {
+      val newSchedule = Schedule(
+        monday = crossoverDay(firstSchedule.monday, secondSchedule.monday),
+        tuesday = crossoverDay(firstSchedule.tuesday, secondSchedule.tuesday),
+        wednesday = crossoverDay(firstSchedule.wednesday, secondSchedule.wednesday),
+        thursday = crossoverDay(firstSchedule.thursday, secondSchedule.thursday),
+        friday = crossoverDay(firstSchedule.friday, secondSchedule.friday),
+      )
+      Seq(firstSchedule, newSchedule, secondSchedule).minBy(_.fitnessScore)
+    }
+  }
+
+  def crossoverDay(firstDayUnm: Day, secondDayUnm: Day): Day = {
+    val firstDay = Seq(firstDayUnm, mutateDay(firstDayUnm)).minBy(_.conflicts)
+    val secondDay= Seq(secondDayUnm, mutateDay(secondDayUnm)).minBy(_.conflicts)
+    Day(
+      firstPair = Seq(firstDay.firstPair, secondDay.firstPair).minBy(_.map(_.conflict).sum), //if (Random.nextBoolean()) firstDay.firstPair else secondDay.firstPair,
+      secondPair = Seq(firstDay.secondPair, secondDay.secondPair).minBy(_.map(_.conflict).sum), //if (Random.nextBoolean()) firstDay.secondPair else secondDay.secondPair,
+      thirdPair = Seq(firstDay.thirdPair, secondDay.thirdPair).minBy(_.map(_.conflict).sum), //if (Random.nextBoolean()) firstDay.thirdPair else secondDay.thirdPair,
+    )
+  }
+
+  def mutateDay(day: Day): Day = Day.fromLessonsSeq(Random.shuffle(day.allLessons))
+
+  def selectTournament(population: Population): Schedule =
+    (1 to tournamentSelection).map(_ => population.population.randomElement).minBy(_.fitnessScore)
 
   def main(args: Array[String]): Unit = {
     validateData()

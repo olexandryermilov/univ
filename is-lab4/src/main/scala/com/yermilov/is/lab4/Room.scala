@@ -2,9 +2,15 @@ package com.yermilov.is.lab4
 
 case class Room(number: Int, ttype: RoomType)
 
-sealed trait RoomType
-case object LectureRoom extends RoomType
-case object PracticalRoom extends RoomType
+sealed trait RoomType {
+  def reverse: RoomType
+}
+case object LectureRoom extends RoomType {
+  override def reverse: RoomType = PracticalRoom
+}
+case object PracticalRoom extends RoomType {
+  override def reverse: RoomType = LectureRoom
+}
 
 object Room {
 
@@ -16,6 +22,9 @@ object Room {
     Room(4, LectureRoom),
     Room(5, PracticalRoom)
   )
+
+  val lectureRoom = allRooms.filter(_.ttype == LectureRoom)
+  val practicalRoom = allRooms.filter(_.ttype == PracticalRoom)
 
   private def uniqueIds(): Unit = if(allRooms.map(_.number).repetitions > 0) throw new RuntimeException("Room numbers are not unique")
 
