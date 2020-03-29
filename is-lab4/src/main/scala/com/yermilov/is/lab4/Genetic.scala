@@ -2,10 +2,6 @@ package com.yermilov.is.lab4
 
 import scala.util.Random
 
-class Genetic {
-
-}
-
 case class Population(population: Seq[Schedule])
 
 object MainApp {
