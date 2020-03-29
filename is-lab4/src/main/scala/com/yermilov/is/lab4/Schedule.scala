@@ -70,7 +70,7 @@ object Schedule {
     val thursdayLessons = Random.nextInt(remainingLessons / 2)
     remainingLessons = remainingLessons - thursdayLessons
     val fridayLessons = remainingLessons*/
-    Seq(10, 12, 15, 10, amountOfLessons - 10- 12-15-10) //Seq(mondayLessons, tuesdayLessons, wednesdayLessons, thursdayLessons, fridayLessons)
+    Seq(12, 11, 13, 11, amountOfLessons - 11- 12-13-11) //Seq(mondayLessons, tuesdayLessons, wednesdayLessons, thursdayLessons, fridayLessons)
   }
 
   def fromLessonsSeq(lessons: Seq[Lesson]): Schedule = {

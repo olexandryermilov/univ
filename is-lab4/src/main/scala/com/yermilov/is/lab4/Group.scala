@@ -8,9 +8,10 @@ object Group {
     Group(0, Set(0, 1, 3, 8, 12)),
     Group(1, Set(2, 21, 23)),
     Group(2, Set(4, 5, 6, 7, 10, 11)),
-    Group(3, Set(13, 14, 15, 16, 17, 18, 19)),
+    Group(3, Set(13, 14, 15, 16)),
     Group(4, Set(20, 22, 24, 25)),
     Group(5, Set(9, 28, 29, 30)),
+    Group(6, Set(17, 18, 19)),
     //Group(6, Set(33, 34, 35, 36, 37, 38, 39)),
     //Group(7, Set(44, 46, 47))
   )

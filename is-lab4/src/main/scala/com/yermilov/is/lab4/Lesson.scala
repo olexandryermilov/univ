@@ -13,7 +13,7 @@ case class Lesson(course: Course, lessonType: LessonType, group: Group, teacher:
     case Practical => 0
   }
 
-  def teacherConflict: Int = 0//!teacher.possibleCourses.contains(course)
+  def teacherConflict: Int = !teacher.possibleCourses.contains(course)
 
   def groupConflict: Int = !group.courses.contains(course)
 
