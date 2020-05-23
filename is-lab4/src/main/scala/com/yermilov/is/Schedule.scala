@@ -1,6 +1,4 @@
-package com.yermilov.is.lab4
-
-import scala.util.Random
+package com.yermilov.is
 
 case class Schedule(monday: Day, tuesday: Day, wednesday: Day, thursday: Day, friday: Day) {
   lazy val allDays: Seq[Day] = monday :: tuesday :: wednesday :: thursday :: friday :: Nil
@@ -43,8 +41,8 @@ case class Schedule(monday: Day, tuesday: Day, wednesday: Day, thursday: Day, fr
 
 object Schedule {
 
-  import Group._
   import Day._
+  import Group._
 
   lazy val amountOfLessons = allGroups.flatMap(_.courses).size * 2
 
@@ -70,7 +68,7 @@ object Schedule {
     val thursdayLessons = Random.nextInt(remainingLessons / 2)
     remainingLessons = remainingLessons - thursdayLessons
     val fridayLessons = remainingLessons*/
-    Seq(12, 11, 13, 11, amountOfLessons - 11- 12-13-11) //Seq(mondayLessons, tuesdayLessons, wednesdayLessons, thursdayLessons, fridayLessons)
+    Seq(12, 12, 12, 12, 12) //Seq(mondayLessons, tuesdayLessons, wednesdayLessons, thursdayLessons, fridayLessons)
   }
 
   def fromLessonsSeq(lessons: Seq[Lesson]): Schedule = {

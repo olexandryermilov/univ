@@ -1,4 +1,4 @@
-package com.yermilov.is.lab4
+package com.yermilov.is
 
 case class Course(id: Int, name: String, frequency: Int = 1)
 
@@ -34,7 +34,7 @@ object Course {
     Course(27, "Presentation skills"),
     Course(28, "Algebra"),
     Course(29, "Differential equalities"),
-    Course(30, "Differential inequalities"),
+    //Course(30, "Differential inequalities"),
     //Course(31, "Game development"),
     //Course(32, "Design"),
     //Course(33, "Web design"),

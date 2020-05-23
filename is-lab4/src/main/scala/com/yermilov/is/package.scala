@@ -1,10 +1,10 @@
-package com.yermilov.is
+package com.yermilov
 
-import com.yermilov.is.lab4.Course.allCourses
+import com.yermilov.is.Course.allCourses
 
 import scala.util.Random
 
-package object lab4 {
+package object is {
   implicit def booleanToInt(bool: Boolean): Int = if (bool) 1 else 0
 
   implicit class SeqExtensions[T](val seq: Seq[T]) extends AnyVal {

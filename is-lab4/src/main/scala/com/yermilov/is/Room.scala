@@ -1,4 +1,4 @@
-package com.yermilov.is.lab4
+package com.yermilov.is
 
 case class Room(number: Int, ttype: RoomType)
 
@@ -19,8 +19,8 @@ object Room {
     Room(1, PracticalRoom),
     Room(2, LectureRoom),
     Room(3, PracticalRoom),
-    Room(4, LectureRoom),
-    Room(5, PracticalRoom)
+    //Room(4, LectureRoom),
+    //Room(5, PracticalRoom)
   )
 
   val lectureRoom = allRooms.filter(_.ttype == LectureRoom)

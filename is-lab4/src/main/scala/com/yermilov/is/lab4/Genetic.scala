@@ -1,5 +1,8 @@
 package com.yermilov.is.lab4
 
+import com.yermilov.is
+import com.yermilov.is.{Course, Day, Group, Lecture, LectureRoom, Lesson, Room, Schedule, Teacher}
+
 import scala.util.Random
 
 case class Population(population: Seq[Schedule])
@@ -137,7 +140,7 @@ object MainApp {
   def crossoverDay(firstDayUnm: Day, secondDayUnm: Day): Day = {
     val firstDay = if(Random.nextBoolean())mutateDay(firstDayUnm) else firstDayUnm
     val secondDay =if(Random.nextBoolean()) mutateDay(secondDayUnm) else secondDayUnm
-    Day(
+    is.Day(
       firstPair =  Seq(fixPairTeacher(fixPairCourse(fixPairRoom(fixPair(firstDay.firstPair)))),  fixPairTeacher(fixPairCourse(fixPairRoom(fixPair(secondDay.firstPair))))).minBy(_.map(_.conflict).sum), //if (Random.nextBoolean()) firstDay.firstPair else secondDay.firstPair,
       secondPair = Seq(fixPairTeacher(fixPairCourse(fixPairRoom(fixPair(firstDay.secondPair)))), fixPairTeacher(fixPairCourse(fixPairRoom(fixPair(secondDay.secondPair))))).minBy(_.map(_.conflict).sum), //if (Random.nextBoolean()) firstDay.secondPair else secondDay.secondPair,
       thirdPair =  Seq(fixPairTeacher(fixPairCourse(fixPairRoom(fixPair(firstDay.thirdPair)))),  fixPairTeacher(fixPairCourse(fixPairRoom(fixPair(secondDay.thirdPair))))).minBy(_.map(_.conflict).sum), //if (Random.nextBoolean()) firstDay.thirdPair else secondDay.thirdPair,

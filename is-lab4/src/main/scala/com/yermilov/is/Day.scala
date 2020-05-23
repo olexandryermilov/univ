@@ -1,4 +1,4 @@
-package com.yermilov.is.lab4
+package com.yermilov.is
 
 import scala.util.Random
 
@@ -43,7 +43,7 @@ object Day {
     val secondPairLessons = nextIntWithoutErrors(remainingLessons / 2)
     remainingLessons = remainingLessons - secondPairLessons
     val thirdPairLessons = remainingLessons*/
-    Seq(amountOfLessons / 3, amountOfLessons / 3 + 1, amountOfLessons - 2 * (amountOfLessons / 3) - 1) //Seq(firstPairLessons, secondPairLessons, thirdPairLessons)
+    Seq(4, 4, 4) //Seq(firstPairLessons, secondPairLessons, thirdPairLessons)
   }
 
   @scala.annotation.tailrec

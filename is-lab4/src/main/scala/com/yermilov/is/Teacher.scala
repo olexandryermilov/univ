@@ -1,4 +1,4 @@
-package com.yermilov.is.lab4
+package com.yermilov.is
 
 case class Teacher(id: Int, surName: String, possibleCourses: Set[Course])
 
@@ -18,7 +18,8 @@ object Teacher {
     Teacher(10, "R", Set(18, 19)),
     Teacher(11, "T", Set(20, 21, 22)),
     Teacher(12, "Y", Set(23, 27, 29)),
-    Teacher(13, "U", Set(25, 26, 30)),
+    Teacher(13, "U", Set(25, 26)),
+    //Teacher(13, "U", Set(25, 26, 30)),
     //Teacher(13, "U", Set(24, 30, 38)),
     Teacher(14, "I", Set(28, 24)),
     //Teacher(14, "I", Set(25, 31)),

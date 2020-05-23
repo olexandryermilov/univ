@@ -1,4 +1,4 @@
-package com.yermilov.is.lab4
+package com.yermilov.is
 
 import scala.util.{Random, Try}
 
@@ -22,10 +22,9 @@ case class Lesson(course: Course, lessonType: LessonType, group: Group, teacher:
 }
 
 object Lesson {
-  import Course._
   import Group._
-  import Teacher._
   import Room._
+  import Teacher._
   def randomLesson(): Lesson = {
     val teacher = allTeachers.randomElement
     val teacherCourse = teacher.possibleCourses.toSeq
@@ -42,10 +41,15 @@ object Lesson {
 
 sealed trait LessonType {
   def reverse: LessonType
+  def matchRoomType(roomType: RoomType): Boolean
 }
 case object Lecture extends LessonType {
   override def reverse: LessonType = Practical
+
+  override def matchRoomType(roomType: RoomType): Boolean = roomType == LectureRoom
 }
 case object Practical extends LessonType {
   override def reverse: LessonType = Lecture
+
+  override def matchRoomType(roomType: RoomType): Boolean = roomType == PracticalRoom
 }
